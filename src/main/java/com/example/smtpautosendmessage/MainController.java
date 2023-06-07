@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.FileChooser;
 
 import javax.activation.*;
 import javax.mail.*;
@@ -181,10 +182,29 @@ public class MainController {
     /** Конфигурация **/
     @FXML
     public void onSavePropertiesClick(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();//Класс работы с диалогом выборки и сохранения
+        fileChooser.setTitle("Экспорт конфигурации");//Заголовок диалога
+        FileChooser.ExtensionFilter extFilter =
+                new FileChooser.ExtensionFilter("Configuration files (*.properties)", "*.properties");//Расширение
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(description.getScene().getWindow()); //Указываем текущую сцену CodeNote.mainStage
+        if (file != null) {
+            ConfigUtil.saveInFile(file);
+        }
     }
 
     @FXML
     public void onLoadPropertiesClick(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();//Класс работы с диалогом выборки и сохранения
+        fileChooser.setTitle("Импорт конфигурации");//Заголовок диалога
+        FileChooser.ExtensionFilter extFilter =
+                new FileChooser.ExtensionFilter("Configuration files (*.properties)", "*.properties");//Расширение
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showOpenDialog(description.getScene().getWindow());//Указываем текущую сцену CodeNote.mainStage
+        if (file != null) {
+            ConfigUtil.loadFromFile(file); // FIXME: Ошибка кодировки, при импорте данных на русском языке возникает ошибка кодировки
+            loadPropertiesFromConfig();
+        }
     }
 
     /** Форма **/
@@ -208,6 +228,12 @@ public class MainController {
 
     @FXML
     public void onLoadIntoPropertiesClick(ActionEvent actionEvent) {
+        Properties config = ConfigUtil.config;
+        config.setProperty("mail.smtp.recipient", recipientField.getText());
+        config.setProperty("mail.smtp.title.prefix", prefixField.getText());
+        config.setProperty("mail.smtp.title.suffix", suffixField.getText());
+        config.setProperty("mail.smtp.message", description.getText());
+        ConfigUtil.setConfig(config);
     }
 
     /** Настройки **/

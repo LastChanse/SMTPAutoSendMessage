@@ -7,6 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
+/**
+ * Утилита для работы с файлом конфигурации
+ */
 public class ConfigUtil {
     /** Название файла конфигурации */
     private static String configFileName = "config";
@@ -24,7 +27,11 @@ public class ConfigUtil {
         config = getConfig();
     }
 
-    static public Properties getDefault() { // Конфигурация по умолчанию
+    /**
+     * Получить конфигурацию по умолчанию
+     * @return конфигурация
+     */
+    static public Properties getDefault() {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
@@ -42,6 +49,9 @@ public class ConfigUtil {
         return properties;
     }
 
+    /**
+     * Создание файла конфигурации по умолчанию
+     */
     static public void createConfigWithDefaultProperties() {
         File file = new File(filePath);
         try {
@@ -53,6 +63,10 @@ public class ConfigUtil {
         setConfig(getDefault());
     }
 
+    /**
+     * Получение конфигурации из файла
+     * @return конфигурация
+     */
     static public Properties getConfig() {
         boolean fileNotExists = Files.notExists(Path.of(filePath));
         if (fileNotExists) {
@@ -62,7 +76,7 @@ public class ConfigUtil {
         try (FileInputStream fis = new FileInputStream(filePath)) {
             properties.load(fis);
         } catch (FileNotFoundException ex) {
-            AlertUtil.showAlert("Config not found in \"" + filePath + "\"", Alert.AlertType.ERROR);
+            AlertUtil.showAlert("Конфигурация не найдена в файле:\n\"" + filePath + "\"", Alert.AlertType.ERROR);
             return null;
         } catch (IOException ex) {
             AlertUtil.showAlert(ex.getMessage() + "\n\n" + ex.getStackTrace(), Alert.AlertType.ERROR);
@@ -71,6 +85,10 @@ public class ConfigUtil {
         return properties;
     }
 
+    /**
+     * Сохранение конфигурации в файл
+     * @param properties конфигурация
+     */
     static public void setConfig(Properties properties) {
         try (OutputStream output = new FileOutputStream(filePath)) {
 
@@ -82,5 +100,40 @@ public class ConfigUtil {
         } catch (IOException io) {
             io.printStackTrace();
         }
+    }
+
+    /**
+     * Сохранение конфигурации в файл
+     * @param file Файл в который будет сохранена конфигурация
+     */
+    static public void saveInFile(File file) {
+        try (OutputStream output = new FileOutputStream(file.getPath())) {
+            Properties properties = config;
+            properties.store(output, null);
+            System.out.println(properties);
+            output.flush();
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+    }
+
+    /**
+     * Сохранение конфигурации в файл
+     * @param file Файл из которого будет загружена конфигурация
+     */
+    static public void loadFromFile(File file) {
+        String path = file.getPath();
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream(path)) {
+            properties.load(fis);
+        } catch (FileNotFoundException ex) {
+            AlertUtil.showAlert("Конфигурация не найдена в файле:\n\"" + path + "\"", Alert.AlertType.ERROR);
+            return;
+        } catch (IOException ex) {
+            AlertUtil.showAlert(ex.getMessage() + "\n\n" + ex.getStackTrace(), Alert.AlertType.ERROR);
+            return;
+        }
+        ConfigUtil.config = properties;
+        setConfig(properties);
     }
 }
