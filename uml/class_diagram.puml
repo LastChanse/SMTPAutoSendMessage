@@ -1,0 +1,69 @@
+@startuml
+'Полезная ссылка https://plantuml.com/class-diagram
+'Команда ниже преобразует иконки(public,private,protected,package private) в символы(+,-,#,~)
+'skinparam classAttributeIconSize 0
+
+class AlertUtil {
+    + {static} showAlert(String message)
+    + {static} showAlert(String message, Alert.AlertType alertType)
+}
+
+class CharsetChangerUtil {
+    + {static} fromISOToUTF(String isoText)
+    + {static} fromUTFToISO(String utfText)
+}
+
+class ConfigUtil {
+    - {static} String configFileName
+      {static} String filePath
+    + {static} Properties config
+
+    + {static} initialize()
+    + {static} Properties getDefault()
+    + {static} createConfigWithDefaultProperties()
+    + {static} Properties getConfig()
+    + {static} void setConfig(Properties properties)
+}
+
+class MainController {
+            ..@FXML..
+    + TextField recipientField
+    + TextField prefixField
+    + TextField suffixField
+    + TextField titleField
+            __
+    - loadPropertiesFromConfig()
+    - sendMessage()
+    - generateTitle()
+    - cleanForm()
+            ..@FXML..
+    + initialize()
+    + prefixFieldChange(KeyEvent keyEvent)
+    + suffixFieldChange(KeyEvent keyEvent)
+    + onSendButtonClick()
+    + onSavePropertiesClick(ActionEvent actionEvent)
+    + onLoadPropertiesClick(ActionEvent actionEvent)
+    + onCleanFormClick(ActionEvent actionEvent)
+    + onLoadFromPropertiesClick(ActionEvent actionEvent)
+    + onLoadIntoPropertiesClick(ActionEvent actionEvent)
+    + onSettingsClick(ActionEvent actionEvent)
+    + onTutorialClick(ActionEvent actionEvent)
+}
+class SMTPApplication {
+    __
+    + {static} void main(String[] args)
+    ..@Override..
+    + start(Stage stage)
+}
+
+class SMTPApplicationLauncher {
+    + {static} void main(String[] args)
+}
+
+SMTPApplication <|-- SMTPApplicationLauncher
+MainController <|-- SMTPApplication
+AlertUtil <|-- MainController
+CharsetChangerUtil <|-- MainController
+ConfigUtil <|-- MainController
+
+@enduml

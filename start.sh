@@ -1,0 +1,1 @@
+java --module-path=target/dependency/ --add-modules javafx.controls,javafx.fxml,java.mail -cp target/SMTPAutoSendMessage-1.0-SNAPSHOT.jar com.example.smtpautosendmessage.SMTPApplication

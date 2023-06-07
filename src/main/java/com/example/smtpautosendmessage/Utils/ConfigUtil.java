@@ -8,10 +8,17 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 public class ConfigUtil {
+    /** Название файла конфигурации */
     private static String configFileName = "config";
+
+    /** Путь к файлу конфигурации */
     static String filePath;
+    /** Конфигурация */
     public static Properties config;
 
+    /**
+     * Инициализация файла конфигурации
+     */
     static public void initialize() {
         filePath = "./"+configFileName+".properties";
         config = getConfig();

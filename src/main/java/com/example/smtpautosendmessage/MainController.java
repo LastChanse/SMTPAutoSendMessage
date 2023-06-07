@@ -26,6 +26,7 @@ public class MainController {
     // TODO: Сделать окно ввода параметров SMTP-сервера и чтобы из конфига подтягивалось в графику параметры SMTP-сервера
     // DONE: Сделать отправку писем от графических параметров, а не напрямую из конфига
     // TODO: Сделать группы получателей
+    // TODO: Сделать сообщение об успехе сохранения данных в конфигурационный файл
     /** Основные элементы **/
     @FXML // Поля формы отправки письма
     public TextField recipientField,prefixField,suffixField,titleField;
@@ -53,17 +54,19 @@ public class MainController {
         description.setText(CharsetChangerUtil.fromISOToUTF(config.getProperty("mail.smtp.message")));
     }
 
+    @FXML
     public void prefixFieldChange(KeyEvent keyEvent) {
         titleField.setText(prefixField.getText() + generateTitle() + suffixField.getText());
     }
 
+    @FXML
     public void suffixFieldChange(KeyEvent keyEvent) {
         titleField.setText(prefixField.getText() + generateTitle() + suffixField.getText());
     }
 
     /** Логика отправки писем **/ // TODO: Отправить логику в MessageUtils
     @FXML // Функция работающая при нажатии на кнопку "Отправить письмо"
-    protected void onSendButtonClick() {
+    public void onSendButtonClick() {
         sendMessage(); // Отправка письма используя данные формы отправки письма
     }
 
@@ -157,8 +160,13 @@ public class MainController {
      * generateTitle -- генерирует заголовок письма из списка файлов во вложениях
      * @return -- заголовок письма
      */
-    String generateTitle() { // FIXME: Переместить в FileUtils
-        File dir = new File("./sendingFiles");
+    private String generateTitle() { // FIXME: Переместить в FileUtils
+        String pathToSendingFiles = "./sendingFiles";
+        File dir = new File(pathToSendingFiles);
+        if(!dir.exists() || !dir.isDirectory()) { // Если файл не существует или это не директория
+            AlertUtil.showAlert("Путь к папке с отправляемыми файлами не верен:\n"+pathToSendingFiles, Alert.AlertType.ERROR);
+            return " "; // Прекратить выполнение функции
+        }
         File[] arrFiles = dir.listFiles();
         List<File> lst = Arrays.asList(arrFiles);
         StringBuffer stringBuffer = new StringBuffer();
@@ -170,13 +178,17 @@ public class MainController {
         return stringBuffer.substring(0, stringBuffer.length() - 2);
     }
     /** Логика меню **/
+    /** Конфигурация **/
+    @FXML
     public void onSavePropertiesClick(ActionEvent actionEvent) {
     }
 
+    @FXML
     public void onLoadPropertiesClick(ActionEvent actionEvent) {
     }
 
-
+    /** Форма **/
+    @FXML
     public void onCleanFormClick(ActionEvent actionEvent) {
         cleanForm();
     }
@@ -189,16 +201,22 @@ public class MainController {
         description.setText("");
     }
 
+    @FXML
     public void onLoadFromPropertiesClick(ActionEvent actionEvent) {
         loadPropertiesFromConfig();
     }
 
+    @FXML
     public void onLoadIntoPropertiesClick(ActionEvent actionEvent) {
     }
 
+    /** Настройки **/
+    @FXML
     public void onSettingsClick(ActionEvent actionEvent) {
     }
 
+    /** Руководство **/
+    @FXML
     public void onTutorialClick(ActionEvent actionEvent) {
     }
 }

@@ -1,7 +1,7 @@
 package com.example.smtpautosendmessage;
 
-public class STMPApplicationLauncher {
+public class SMTPApplicationLauncher {
     public static void main(String[] args) {
-        STMPApplication.main(args);
+        SMTPApplication.main(args);
     }
 }
