@@ -49,10 +49,10 @@ public class MainController {
         }
         Properties config = ConfigUtil.config;
         recipientField.setText(config.getProperty("mail.smtp.recipient"));
-        prefixField.setText(CharsetChangerUtil.fromISOToUTF(config.getProperty("mail.smtp.title.prefix")));
-        suffixField.setText(CharsetChangerUtil.fromISOToUTF(config.getProperty("mail.smtp.title.suffix")));
-        titleField.setText(CharsetChangerUtil.fromISOToUTF(config.getProperty("mail.smtp.title.prefix")) + generateTitle() + CharsetChangerUtil.fromISOToUTF(config.getProperty("mail.smtp.title.suffix")));
-        description.setText(CharsetChangerUtil.fromISOToUTF(config.getProperty("mail.smtp.message")));
+        prefixField.setText(config.getProperty("mail.smtp.title.prefix"));
+        suffixField.setText(config.getProperty("mail.smtp.title.suffix"));
+        titleField.setText(config.getProperty("mail.smtp.title.prefix") + generateTitle() + config.getProperty("mail.smtp.title.suffix"));
+        description.setText(config.getProperty("mail.smtp.message"));
     }
 
     @FXML
@@ -187,9 +187,9 @@ public class MainController {
         FileChooser.ExtensionFilter extFilter =
                 new FileChooser.ExtensionFilter("Configuration files (*.properties)", "*.properties");//Расширение
         fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showSaveDialog(description.getScene().getWindow()); //Указываем текущую сцену CodeNote.mainStage
+        File file = fileChooser.showSaveDialog(description.getScene().getWindow()); //Указываем текущую сцену
         if (file != null) {
-            ConfigUtil.saveInFile(file);
+            ConfigUtil.saveInFile(file); // Сохранение в конфигурационный файл
         }
     }
 
@@ -200,9 +200,9 @@ public class MainController {
         FileChooser.ExtensionFilter extFilter =
                 new FileChooser.ExtensionFilter("Configuration files (*.properties)", "*.properties");//Расширение
         fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showOpenDialog(description.getScene().getWindow());//Указываем текущую сцену CodeNote.mainStage
+        File file = fileChooser.showOpenDialog(description.getScene().getWindow());//Указываем текущую сцену
         if (file != null) {
-            ConfigUtil.loadFromFile(file); // FIXME: Ошибка кодировки, при импорте данных на русском языке возникает ошибка кодировки
+            ConfigUtil.loadFromFile(file); // Загрузка из конфигурационного файла FIXME: Ошибка кодировки, при импорте данных на русском языке возникает ошибка кодировки
             loadPropertiesFromConfig();
         }
     }
@@ -213,6 +213,9 @@ public class MainController {
         cleanForm();
     }
 
+    /**
+     * Чистит форму
+     */
     private void cleanForm() {
         recipientField.setText("");
         prefixField.setText("");

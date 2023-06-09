@@ -3,6 +3,7 @@ package com.example.smtpautosendmessage.Utils;
 import javafx.scene.control.Alert;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
@@ -42,9 +43,9 @@ public class ConfigUtil {
         properties.put("mail.smtp.sender", "youremail@mail.ru");
         properties.put("mail.smtp.sender.password", "passwordFromYourEmail");
         properties.put("mail.smtp.recipient", "1recipientemail@mail.ru,2recipientemail@mail.ru,3recipientemail@mail.ru");
-        properties.put("mail.smtp.title.prefix", "passwordFromYourEmail");
-        properties.put("mail.smtp.title.suffix", "passwordFromYourEmail");
-        properties.put("mail.smtp.message", "passwordFromYourEmail");
+        properties.put("mail.smtp.title.prefix", "префикс");
+        properties.put("mail.smtp.title.suffix", "суффикс");
+        properties.put("mail.smtp.message", "тело сообщения");
         properties.put("mail.smtp.ssl.enable", "true");
         return properties;
     }
@@ -74,7 +75,9 @@ public class ConfigUtil {
         }
         Properties properties = new Properties();
         try (FileInputStream fis = new FileInputStream(filePath)) {
-            properties.load(fis);
+            Reader reader = new InputStreamReader(fis);
+            properties.load(reader);
+            reader.close();
         } catch (FileNotFoundException ex) {
             AlertUtil.showAlert("Конфигурация не найдена в файле:\n\"" + filePath + "\"", Alert.AlertType.ERROR);
             return null;
@@ -91,12 +94,12 @@ public class ConfigUtil {
      */
     static public void setConfig(Properties properties) {
         try (OutputStream output = new FileOutputStream(filePath)) {
-
-            properties.store(output, null);
+            Writer writer       = new OutputStreamWriter(output);
+            properties.store(writer, null);
 
             System.out.println(properties);
 
-            output.flush();
+            writer.flush();
         } catch (IOException io) {
             io.printStackTrace();
         }
@@ -108,10 +111,13 @@ public class ConfigUtil {
      */
     static public void saveInFile(File file) {
         try (OutputStream output = new FileOutputStream(file.getPath())) {
+            Writer writer       = new OutputStreamWriter(output);
             Properties properties = config;
-            properties.store(output, null);
+            properties.store(writer, null);
+
             System.out.println(properties);
-            output.flush();
+
+            writer.flush();
         } catch (IOException io) {
             io.printStackTrace();
         }
@@ -125,7 +131,9 @@ public class ConfigUtil {
         String path = file.getPath();
         Properties properties = new Properties();
         try (FileInputStream fis = new FileInputStream(path)) {
-            properties.load(fis);
+            Reader reader = new InputStreamReader(fis);
+            properties.load(reader);
+            reader.close();
         } catch (FileNotFoundException ex) {
             AlertUtil.showAlert("Конфигурация не найдена в файле:\n\"" + path + "\"", Alert.AlertType.ERROR);
             return;

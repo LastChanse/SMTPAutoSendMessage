@@ -1,5 +1,6 @@
 package com.example.smtpautosendmessage;
 
+import com.example.smtpautosendmessage.Utils.CharsetChangerUtil;
 import com.example.smtpautosendmessage.Utils.ConfigUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -7,8 +8,9 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.Properties;
 
 
 /** Класс служит для запуска графического приложения
