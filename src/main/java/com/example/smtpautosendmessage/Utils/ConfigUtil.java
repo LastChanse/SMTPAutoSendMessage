@@ -12,19 +12,15 @@ import java.util.Properties;
  * Утилита для работы с файлом конфигурации
  */
 public class ConfigUtil {
-    /** Название файла конфигурации */
-    private static String configFileName = "config";
-
     /** Путь к файлу конфигурации */
-    static String filePath;
+    static String filePath = "./config.properties";
     /** Конфигурация */
-    public static Properties config;
+    public static Properties config = new Properties();
 
     /**
      * Инициализация файла конфигурации
      */
     static public void initialize() {
-        filePath = "./"+configFileName+".properties";
         config = getConfig();
     }
 
@@ -47,6 +43,8 @@ public class ConfigUtil {
         properties.put("mail.smtp.title.suffix", "суффикс");
         properties.put("mail.smtp.message", "тело сообщения");
         properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("data.files.path", "./sendingFiles");
+        properties.put("ydata.recipients", "");
         return properties;
     }
 

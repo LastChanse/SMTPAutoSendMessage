@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 
@@ -26,7 +28,7 @@ public class SMTPApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         ConfigUtil.initialize(); // Генерация конфигурационного файла, если он отсутствует
-        FXMLLoader fxmlLoader = new FXMLLoader();//STMPApplication.class.getResource("main-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader();
         Scene scene = new Scene(fxmlLoader.load(SMTPApplication.class.getResource("main-view.fxml")), 800, 400);
         stage.setMinHeight(400);
         stage.setMinWidth(400);

@@ -5,11 +5,15 @@ import com.example.smtpautosendmessage.Utils.CharsetChangerUtil;
 import com.example.smtpautosendmessage.Utils.ConfigUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import javax.activation.*;
 import javax.mail.*;
@@ -18,21 +22,28 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Контроллер главного окна
+ */
 public class MainController {
     // DONE: Сделать так, чтобы из конфига подтягивалось в графику параметры письма
     // TODO: Сделать окно ввода параметров SMTP-сервера и чтобы из конфига подтягивалось в графику параметры SMTP-сервера
     // DONE: Сделать отправку писем от графических параметров, а не напрямую из конфига
     // TODO: Сделать группы получателей
-    // TODO: Сделать сообщение об успехе сохранения данных в конфигурационный файл
-    /** Основные элементы **/
+    // DONE: Сделать сообщение об успехе сохранения данных в конфигурационный файл
+    /**
+     * Основные элементы
+     **/
     @FXML // Поля формы отправки письма
-    public TextField recipientField,prefixField,suffixField,titleField;
+    public TextField recipientField, prefixField, suffixField, titleField;
     @FXML // Поле описания к письму
     public TextArea description;
+
     @FXML
     public void initialize() {
         loadPropertiesFromConfig();
@@ -65,7 +76,9 @@ public class MainController {
         titleField.setText(prefixField.getText() + generateTitle() + suffixField.getText());
     }
 
-    /** Логика отправки писем **/ // TODO: Отправить логику в MessageUtils
+    /**
+     * Логика отправки писем
+     **/ // TODO: Отправить логику в MessageUtils
     @FXML // Функция работающая при нажатии на кнопку "Отправить письмо"
     public void onSendButtonClick() {
         sendMessage(); // Отправка письма используя данные формы отправки письма
@@ -150,22 +163,29 @@ public class MainController {
             // Отправить сообщение
             Transport.send(message);
 
-            AlertUtil.showAlert("Сообщение успешно отправлено", Alert.AlertType.INFORMATION);
+            AlertUtil.showAlert("Письмо успешно отправлено", Alert.AlertType.INFORMATION);
         } catch (MessagingException e) {
-            AlertUtil.showAlert("Сообщение не отправлено", Alert.AlertType.ERROR);
+            AlertUtil.showAlert("Письмо не отправлено", Alert.AlertType.ERROR);
             throw new RuntimeException(e);
         }
     }
 
     /**
      * generateTitle -- генерирует заголовок письма из списка файлов во вложениях
+     *
      * @return -- заголовок письма
      */
     private String generateTitle() {
-        String pathToSendingFiles = "./sendingFiles";
+        Properties config = ConfigUtil.config;
+        String pathToSendingFiles;
+        if (config.get("data.files.path") == null) {
+            AlertUtil.showAlert("Путь к папке с отправляемыми файлами не настроен.", Alert.AlertType.ERROR);
+            return " "; // Прекратить выполнение функции
+        }
+        pathToSendingFiles = config.get("data.files.path").toString();
         File dir = new File(pathToSendingFiles);
-        if(!dir.exists() || !dir.isDirectory()) { // Если файл не существует или это не директория
-            AlertUtil.showAlert("Путь к папке с отправляемыми файлами не верен:\n"+pathToSendingFiles, Alert.AlertType.ERROR);
+        if (!dir.exists() || !dir.isDirectory()) { // Если файл не существует или это не директория
+            AlertUtil.showAlert("Путь к папке с отправляемыми файлами не верен:\n" + pathToSendingFiles, Alert.AlertType.ERROR);
             return " "; // Прекратить выполнение функции
         }
         File[] arrFiles = dir.listFiles();
@@ -179,7 +199,9 @@ public class MainController {
         return stringBuffer.substring(0, stringBuffer.length() - 2);
     }
     /** Логика меню **/
-    /** Конфигурация **/
+    /**
+     * Конфигурация
+     **/
     @FXML
     public void onSavePropertiesClick(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();//Класс работы с диалогом выборки и сохранения
@@ -187,6 +209,7 @@ public class MainController {
         FileChooser.ExtensionFilter extFilter =
                 new FileChooser.ExtensionFilter("Configuration files (*.properties)", "*.properties");//Расширение
         fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setInitialDirectory(new File("."));
         File file = fileChooser.showSaveDialog(description.getScene().getWindow()); //Указываем текущую сцену
         if (file != null) {
             ConfigUtil.saveInFile(file); // Сохранение в конфигурационный файл
@@ -200,14 +223,17 @@ public class MainController {
         FileChooser.ExtensionFilter extFilter =
                 new FileChooser.ExtensionFilter("Configuration files (*.properties)", "*.properties");//Расширение
         fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showOpenDialog(description.getScene().getWindow());//Указываем текущую сцену
+        fileChooser.setInitialDirectory(new File("."));
+        File file = fileChooser.showOpenDialog(description.getScene().getWindow()); //Указываем текущую сцену
         if (file != null) {
             ConfigUtil.loadFromFile(file); // Загрузка из конфигурационного файла
             loadPropertiesFromConfig();
         }
     }
 
-    /** Форма **/
+    /**
+     * Форма
+     **/
     @FXML
     public void onCleanFormClick(ActionEvent actionEvent) {
         cleanForm();
@@ -227,6 +253,7 @@ public class MainController {
     @FXML
     public void onLoadFromPropertiesClick(ActionEvent actionEvent) {
         loadPropertiesFromConfig();
+        AlertUtil.showAlert("Данные полей формы успешно загружены из конфигурации.", Alert.AlertType.INFORMATION);
     }
 
     @FXML
@@ -237,14 +264,31 @@ public class MainController {
         config.setProperty("mail.smtp.title.suffix", suffixField.getText());
         config.setProperty("mail.smtp.message", description.getText());
         ConfigUtil.setConfig(config);
+        AlertUtil.showAlert("Данные полей формы успешно сохранены в конфигурацию.", Alert.AlertType.INFORMATION);
     }
 
-    /** Настройки **/
+    /**
+     * Настройки
+     **/
     @FXML
-    public void onSettingsClick(ActionEvent actionEvent) {
+    public void onSettingsClick() {
+        try {
+            Stage stage = new Stage();
+            Scene scene = new Scene(new FXMLLoader().load(getClass().getResource("settings-view.fxml")), 800, 400);
+            stage.setMinHeight(400);
+            stage.setMinWidth(600);
+            stage.setTitle("Настройки");
+            stage.setScene(scene);
+            stage.getIcons().add(new Image(String.valueOf(getClass().getResource("logo.png")))); // Установка логотипа
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    /** Руководство **/
+    /**
+     * Руководство
+     **/
     @FXML
     public void onTutorialClick(ActionEvent actionEvent) {
     }
