@@ -161,7 +161,7 @@ public class MainController {
      * generateTitle -- генерирует заголовок письма из списка файлов во вложениях
      * @return -- заголовок письма
      */
-    private String generateTitle() { // FIXME: Переместить в FileUtils
+    private String generateTitle() {
         String pathToSendingFiles = "./sendingFiles";
         File dir = new File(pathToSendingFiles);
         if(!dir.exists() || !dir.isDirectory()) { // Если файл не существует или это не директория
@@ -202,7 +202,7 @@ public class MainController {
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showOpenDialog(description.getScene().getWindow());//Указываем текущую сцену
         if (file != null) {
-            ConfigUtil.loadFromFile(file); // Загрузка из конфигурационного файла FIXME: Ошибка кодировки, при импорте данных на русском языке возникает ошибка кодировки
+            ConfigUtil.loadFromFile(file); // Загрузка из конфигурационного файла
             loadPropertiesFromConfig();
         }
     }
