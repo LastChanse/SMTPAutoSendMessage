@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Properties;
 
 /**
@@ -141,5 +142,31 @@ public class ConfigUtil {
         }
         ConfigUtil.config = properties;
         setConfig(properties);
+    }
+
+    /** Преобразование групп получателей из массива в строку */
+    static public String convertRecipientsGroupListToString(ArrayList arrayList) {
+        String str = "";
+        for (int i = 0; i<arrayList.size();i++)
+        {
+            String[] strings = (String[]) arrayList.get(i);
+            str +=  "{{"+strings[0]+"}:{";
+            str +=  strings[1]+"}};";
+        }
+        return str;
+    }
+
+    /** Преобразование групп получателей из строки в массив */
+    static public ArrayList convertRecipientsGroupStringToList(String string) {
+        ArrayList recipientsGroupList = new ArrayList();
+        String[] strings = string.split(";");
+        for (String item : strings)
+        {
+            item = item.replace("{","").replace("}",""); // Удаление декоративных скобок
+            String groupName = item.split(":")[0]; // Название группы получателей
+            String groupEmails = item.split(":")[1]; // Почта группы получателей
+            recipientsGroupList.add(new String[] {groupName, groupEmails});
+        }
+        return recipientsGroupList;
     }
 }

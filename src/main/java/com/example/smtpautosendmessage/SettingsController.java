@@ -1,5 +1,6 @@
 package com.example.smtpautosendmessage;
 
+import com.example.smtpautosendmessage.Utils.AlertUtil;
 import com.example.smtpautosendmessage.Utils.ConfigUtil;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -92,6 +93,7 @@ public class SettingsController {
         newConfig.setProperty("data.files.path", textFieldSelectCatDirSendingFiles.getText());
         ConfigUtil.setConfig(newConfig);
         ConfigUtil.config = newConfig;
+        AlertUtil.showAlert("Настройки успешно сохранены");
     }
 
     /** Поле с выбранным путем к папке с прикрепляемыми файлами */
@@ -142,13 +144,45 @@ public class SettingsController {
     /**
      * Сохранить настройки страницы SMTP подключение
      */
-
     @FXML
     void saveSettingsSMTP(MouseEvent event) {
-
+        Properties newConfig = ConfigUtil.getConfig();
+        newConfig.setProperty("mail.smtp.host", textFieldHost.getText());
+        newConfig.setProperty("mail.smtp.port", textFieldPort.getText());
+        newConfig.setProperty("mail.smtp.auth", String.valueOf(checkBoxAuth.isSelected()));
+        newConfig.setProperty("mail.smtp.sender", textFieldLogin.getText());
+        newConfig.setProperty("mail.smtp.sender.password", textFieldPassword.getText());
+        newConfig.setProperty("mail.smtp.ssl.enable", String.valueOf(checkBoxSSL.isSelected()));
+        newConfig.setProperty("mail.smtp.starttls.enable", String.valueOf(checkBoxTLS.isSelected()));
+        newConfig.setProperty("mail.smtps.ssl.checkserveridentity", String.valueOf(checkBoxSSLCheckServer.isSelected()));
+        newConfig.setProperty("mail.smtps.ssl.trust", textFieldTrustServerList.getText());
+        ConfigUtil.setConfig(newConfig);
+        ConfigUtil.config = newConfig;
+        AlertUtil.showAlert("Настройки успешно сохранены");
     }
 
     /** Страница Настройки групп получателей */
+
+    /** */
+    @FXML
+    private ListView recipientsGroupList;
+
+    /** Добавление группы получателей */
+    @FXML
+    public void addRecipientsGroup(MouseEvent event) {
+
+    }
+    /** Редактирование группы получателей */
+    @FXML
+    public void editRecipientsGroup(MouseEvent event) {
+
+    }
+    /** Удаление группы получателей */
+    @FXML
+    public void removeRecipientsGroup(MouseEvent event) {
+
+    }
+
     /**
      * Сохранить настройки страницы групп получателей
      */
@@ -156,6 +190,7 @@ public class SettingsController {
     @FXML
     void saveSettingsRecipients(MouseEvent event) {
 
+        AlertUtil.showAlert("Настройки успешно сохранены");
     }
 
 }

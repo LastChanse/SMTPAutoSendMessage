@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import javax.activation.*;
@@ -280,7 +281,8 @@ public class MainController {
             stage.setTitle("Настройки");
             stage.setScene(scene);
             stage.getIcons().add(new Image(String.valueOf(getClass().getResource("logo.png")))); // Установка логотипа
-            stage.show();
+            stage.initModality(Modality.APPLICATION_MODAL); // Делаем окно модальным и блокируем основное окно
+            stage.showAndWait(); // Показываем окно и ждём пока его не закроют
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

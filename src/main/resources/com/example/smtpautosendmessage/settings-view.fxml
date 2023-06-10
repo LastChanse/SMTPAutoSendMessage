@@ -34,17 +34,6 @@
                      </children>
                   </AnchorPane>
                </children></AnchorPane>
-            <AnchorPane fx:id="pgRecieverSettings" layoutX="10.0" layoutY="10.0" prefHeight="290.0" prefWidth="400.0" style="-fx-background-color: #fff;">
-               <children>
-                  <Label text="Группы получателей" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Button id="saveButton" mnemonicParsing="false" onMouseClicked="#saveSettingsRecipients" prefHeight="25.0" prefWidth="120.0" text="Сохранить" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="136.0" />
-                  <Button cancelButton="true" mnemonicParsing="false" onAction="#closeSettings" prefHeight="25.0" prefWidth="120.0" text="Отмена" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="10.0" />
-               </children>
-            </AnchorPane>
             <AnchorPane fx:id="pgSMTPSettings" layoutX="10.0" layoutY="10.0" prefHeight="290.0" prefWidth="400.0" style="-fx-background-color: #fff;">
                <children>
                   <Label text="SMTP подключение" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
@@ -93,6 +82,21 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="pgRecieverSettings" layoutX="10.0" layoutY="10.0" prefHeight="290.0" prefWidth="400.0" style="-fx-background-color: #fff;">
+               <children>
+                  <Label text="Группы получателей" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Button id="saveButton" mnemonicParsing="false" onMouseClicked="#saveSettingsRecipients" prefHeight="25.0" prefWidth="120.0" text="Сохранить" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="136.0" />
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#closeSettings" prefHeight="25.0" prefWidth="120.0" text="Отмена" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="10.0" />
+                  <ListView fx:id="recipientsGroupList" layoutX="10.0" layoutY="80.0" prefHeight="256.0" prefWidth="378.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0" />
+                  <Button layoutX="14.0" layoutY="37.0" mnemonicParsing="false" onMouseClicked="#addRecipientsGroup" text="Добавить" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
+                  <Button layoutX="20.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#editRecipientsGroup" text="Изменить" AnchorPane.leftAnchor="90.0" AnchorPane.topAnchor="40.0" />
+                  <Button layoutX="110.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#removeRecipientsGroup" text="Удалить" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="40.0" />
                </children>
             </AnchorPane>
          </children>
