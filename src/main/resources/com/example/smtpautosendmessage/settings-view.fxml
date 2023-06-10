@@ -59,35 +59,35 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField promptText="smtp.mail.ru" AnchorPane.leftAnchor="110.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0" />
+                  <TextField fx:id="textFieldHost" promptText="smtp.mail.ru" AnchorPane.leftAnchor="110.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0" />
                   <Label layoutX="20.0" layoutY="52.0" text="Порт: " AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="72.0">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField layoutX="120.0" layoutY="50.0" promptText="465" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0" />
-                  <CheckBox mnemonicParsing="false" text="Использовать авторизацию" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="100.0" />
+                  <TextField fx:id="textFieldPort" layoutX="120.0" layoutY="50.0" promptText="465" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0" />
+                  <CheckBox fx:id="checkBoxAuth" mnemonicParsing="false" text="Использовать авторизацию" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="100.0" />
                   <Label layoutX="20.0" layoutY="82.0" text="Логин:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="122.0">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField layoutX="60.0" layoutY="80.0" promptText="user_name@mail.ru" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0" />
+                  <TextField fx:id="textFieldLogin" layoutX="60.0" layoutY="80.0" promptText="user_name@mail.ru" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0" />
                   <Label layoutX="20.0" layoutY="112.0" text="Пароль:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="152.0">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField layoutX="65.0" layoutY="110.0" promptText="application_password" AnchorPane.leftAnchor="65.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="150.0" />
-                  <CheckBox layoutX="20.0" layoutY="110.0" mnemonicParsing="false" text="Использовать SSL" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="180.0" />
-                  <CheckBox layoutX="210.0" layoutY="110.0" mnemonicParsing="false" text="Использовать TLS" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="200.0" />
-                  <CheckBox layoutX="20.0" layoutY="210.0" mnemonicParsing="false" text="Проверять SSL сертификат сервера" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="220.0" />
+                  <TextField fx:id="textFieldPassword" layoutX="65.0" layoutY="110.0" promptText="application_password" AnchorPane.leftAnchor="65.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="150.0" />
+                  <CheckBox fx:id="checkBoxSSL" layoutX="20.0" layoutY="110.0" mnemonicParsing="false" text="Использовать SSL" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="180.0" />
+                  <CheckBox fx:id="checkBoxTLS" layoutX="210.0" layoutY="110.0" mnemonicParsing="false" text="Использовать TLS" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="200.0" />
+                  <CheckBox fx:id="checkBoxSSLCheckServer" layoutX="20.0" layoutY="210.0" mnemonicParsing="false" text="Проверять SSL сертификат сервера" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="220.0" />
                   <Label layoutX="20.0" layoutY="162.0" text="Список довереных серверов:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="240.0">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField layoutX="75.0" layoutY="160.0" promptText="*" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="260.0" />
+                  <TextField fx:id="textFieldTrustServerList" layoutX="75.0" layoutY="160.0" promptText="*" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="260.0" />
                   <Label layoutX="20.0" layoutY="250.0" text="* - все сервера доверенные" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="290.0">
                      <font>
                         <Font size="14.0" />

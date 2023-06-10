@@ -27,6 +27,7 @@ public class SettingsController {
 
     @FXML
     public void initialize() {
+        Properties config = ConfigUtil.config;
         pgHelloSettings.toFront();
         // Загрузка данных из конфигурационного файла
         // Добавление страниц настроек
@@ -40,11 +41,19 @@ public class SettingsController {
                 String pageName = pageList.getSelectionModel().getSelectedItem().toString();
                 switch (pageName) {
                     case ("Прикрепляемые файлы"):
-                        Properties config = ConfigUtil.config;
                         textFieldSelectCatDirSendingFiles.setText(config.getProperty("data.files.path",""));
                         pgPathSettings.toFront();
                         break;
                     case ("SMTP подключение"):
+                        textFieldHost.setText(config.getProperty("mail.smtp.host",""));
+                        textFieldPort.setText(config.getProperty("mail.smtp.port",""));
+                        checkBoxAuth.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.auth","")));
+                        textFieldLogin.setText(config.getProperty("mail.smtp.sender",""));
+                        textFieldPassword.setText(config.getProperty("mail.smtp.sender.password",""));
+                        checkBoxSSL.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.ssl.enable","")));
+                        checkBoxTLS.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.starttls.enable","")));
+                        checkBoxSSLCheckServer.setSelected(Boolean.valueOf(config.getProperty("mail.smtps.ssl.checkserveridentity","")));
+                        textFieldTrustServerList.setText(config.getProperty("mail.smtps.ssl.trust",""));
                         pgSMTPSettings.toFront();
                         break;
                     case ("Группы получателей"):
@@ -108,6 +117,28 @@ public class SettingsController {
     }
 
     /** Страница SMTP подключение */
+    /** Поле адреса SMTP сервера */
+    @FXML
+    private TextField textFieldHost,
+    /** Поле порта SMTP сервера */
+    textFieldPort,
+    /** Поле логина для отправки писем с помощью SMTP сервера */
+    textFieldLogin,
+    /** Поле пароля для отправки писем с помощью SMTP сервера */
+    textFieldPassword,
+    /** Поле списка доверенных серверов */
+    textFieldTrustServerList;
+
+    /** Флажок наличия авторизации */
+    @FXML
+    private CheckBox checkBoxAuth,
+    /** Флажок использования сертификата SSL */
+    checkBoxSSL,
+    /** Флажок использования сертификата TLS */
+    checkBoxTLS,
+    /** Флажок проверки SSL сертификата сервера */
+    checkBoxSSLCheckServer;
+
     /**
      * Сохранить настройки страницы SMTP подключение
      */
