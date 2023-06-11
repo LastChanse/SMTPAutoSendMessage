@@ -2,27 +2,41 @@ package com.example.smtpautosendmessage;
 
 import com.example.smtpautosendmessage.Utils.AlertUtil;
 import com.example.smtpautosendmessage.Utils.ConfigUtil;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.Properties;
+
+import static javafx.scene.control.cell.TextFieldTableCell.*;
 
 /**
  * Контроллер окна настроек
  */
 public class SettingsController {
+    /**
+     * Страницы настроек
+     */
     @FXML
     private AnchorPane pgSMTPSettings, pgRecieverSettings, pgPathSettings, pgHelloSettings;
+    /**
+     * Список страниц настроек
+     */
     @FXML
     private ListView pageList;
 
@@ -39,25 +53,82 @@ public class SettingsController {
         pageList.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                String pageName = pageList.getSelectionModel().getSelectedItem().toString();
+                String pageName;
+                if ((pageName = pageList.getSelectionModel().getSelectedItem().toString()) == null) {
+                    pageName = "";
+                }
                 switch (pageName) {
                     case ("Прикрепляемые файлы"):
-                        textFieldSelectCatDirSendingFiles.setText(config.getProperty("data.files.path",""));
+                        textFieldSelectCatDirSendingFiles.setText(config.getProperty("data.files.path", ""));
                         pgPathSettings.toFront();
                         break;
                     case ("SMTP подключение"):
-                        textFieldHost.setText(config.getProperty("mail.smtp.host",""));
-                        textFieldPort.setText(config.getProperty("mail.smtp.port",""));
-                        checkBoxAuth.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.auth","")));
-                        textFieldLogin.setText(config.getProperty("mail.smtp.sender",""));
-                        textFieldPassword.setText(config.getProperty("mail.smtp.sender.password",""));
-                        checkBoxSSL.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.ssl.enable","")));
-                        checkBoxTLS.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.starttls.enable","")));
-                        checkBoxSSLCheckServer.setSelected(Boolean.valueOf(config.getProperty("mail.smtps.ssl.checkserveridentity","")));
-                        textFieldTrustServerList.setText(config.getProperty("mail.smtps.ssl.trust",""));
+                        textFieldHost.setText(config.getProperty("mail.smtp.host", ""));
+                        textFieldPort.setText(config.getProperty("mail.smtp.port", ""));
+                        checkBoxAuth.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.auth", "")));
+                        textFieldLogin.setText(config.getProperty("mail.smtp.sender", ""));
+                        textFieldPassword.setText(config.getProperty("mail.smtp.sender.password", ""));
+                        checkBoxSSL.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.ssl.enable", "")));
+                        checkBoxTLS.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.starttls.enable", "")));
+                        checkBoxSSLCheckServer.setSelected(Boolean.valueOf(config.getProperty("mail.smtps.ssl.checkserveridentity", "")));
+                        textFieldTrustServerList.setText(config.getProperty("mail.smtps.ssl.trust", ""));
                         pgSMTPSettings.toFront();
                         break;
                     case ("Группы получателей"):
+                        recipientsGroupList = ConfigUtil.getRecipients(); // Получение групп получателей
+                        // Привязка столбцов к данным
+                        groupNameCol.setCellValueFactory(data -> data.getValue()[0]);
+                        recieversCol.setCellValueFactory(data -> data.getValue()[1]);
+                        // Добавление возможности двойным кликом левой мыши редактировать данные столбцов
+                        groupNameCol.setCellFactory(forTableColumn());
+                        groupNameCol.setOnEditCommit(e -> e.getTableView().getItems().get(e.getTablePosition().getRow())[0] = new SimpleStringProperty(e.getNewValue()));
+                        recieversCol.setCellFactory(forTableColumn());
+                        recieversCol.setOnEditCommit(e -> e.getTableView().getItems().get(e.getTablePosition().getRow())[1] = new SimpleStringProperty(e.getNewValue()));
+                        // Делаем таблицу редактируемой
+                        tableRecipientsGroup.setEditable(true);
+                        // Загружаем группы получателей в таблицу
+                        tableRecipientsGroup.setItems(recipientsGroupList);
+                        // Добавление контекстного меню для добавления и удаления строк
+                        tableRecipientsGroup.setRowFactory(new Callback<TableView<StringProperty[]>, TableRow<StringProperty[]>>() {
+                            @Override
+                            public TableRow<StringProperty[]> call(TableView<StringProperty[]> tableView) {
+                                final TableRow<StringProperty[]> row = new TableRow<>();
+                                final ContextMenu rowMenu = new ContextMenu();
+                                final ContextMenu tableMenu = new ContextMenu();
+
+                                MenuItem addLastItem = new MenuItem("Добавить в конец");
+                                addLastItem.setOnAction(new EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent event) {
+                                        tableRecipientsGroup.getItems().add(new StringProperty[]{new SimpleStringProperty(""), new SimpleStringProperty("")});
+                                    }
+                                });
+
+                                MenuItem addItem = new MenuItem("Добавить после");
+                                addItem.setOnAction(new EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent event) {
+                                        tableRecipientsGroup.getItems().add(new StringProperty[]{new SimpleStringProperty(""), new SimpleStringProperty("")});
+                                    }
+                                });
+                                MenuItem removeItem = new MenuItem("Удалить");
+                                removeItem.setOnAction(new EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent event) {
+                                        tableRecipientsGroup.getItems().remove(row.getItem());
+                                    }
+                                });
+                                tableMenu.getItems().addAll(addLastItem);
+                                rowMenu.getItems().addAll(addItem, removeItem);
+
+                                // only display context menu for non-empty rows:
+                                row.contextMenuProperty().bind(
+                                        Bindings.when(row.emptyProperty())
+                                                .then(tableMenu)
+                                                .otherwise(rowMenu));
+                                return row;
+                            }
+                        });
                         pgRecieverSettings.toFront();
                         break;
                     default:
@@ -68,7 +139,9 @@ public class SettingsController {
         });
     }
 
-    /** Кнопка закрытия окна настроек */
+    /**
+     * Кнопка закрытия окна настроек
+     */
     @FXML
     private Button closeButton;
 
@@ -96,7 +169,9 @@ public class SettingsController {
         AlertUtil.showAlert("Настройки успешно сохранены");
     }
 
-    /** Поле с выбранным путем к папке с прикрепляемыми файлами */
+    /**
+     * Поле с выбранным путем к папке с прикрепляемыми файлами
+     */
     @FXML
     private TextField textFieldSelectCatDirSendingFiles;
 
@@ -119,26 +194,44 @@ public class SettingsController {
     }
 
     /** Страница SMTP подключение */
-    /** Поле адреса SMTP сервера */
+    /**
+     * Поле адреса SMTP сервера
+     */
     @FXML
     private TextField textFieldHost,
-    /** Поле порта SMTP сервера */
+    /**
+     * Поле порта SMTP сервера
+     */
     textFieldPort,
-    /** Поле логина для отправки писем с помощью SMTP сервера */
+    /**
+     * Поле логина для отправки писем с помощью SMTP сервера
+     */
     textFieldLogin,
-    /** Поле пароля для отправки писем с помощью SMTP сервера */
+    /**
+     * Поле пароля для отправки писем с помощью SMTP сервера
+     */
     textFieldPassword,
-    /** Поле списка доверенных серверов */
+    /**
+     * Поле списка доверенных серверов
+     */
     textFieldTrustServerList;
 
-    /** Флажок наличия авторизации */
+    /**
+     * Флажок наличия авторизации
+     */
     @FXML
     private CheckBox checkBoxAuth,
-    /** Флажок использования сертификата SSL */
+    /**
+     * Флажок использования сертификата SSL
+     */
     checkBoxSSL,
-    /** Флажок использования сертификата TLS */
+    /**
+     * Флажок использования сертификата TLS
+     */
     checkBoxTLS,
-    /** Флажок проверки SSL сертификата сервера */
+    /**
+     * Флажок проверки SSL сертификата сервера
+     */
     checkBoxSSLCheckServer;
 
     /**
@@ -161,23 +254,37 @@ public class SettingsController {
         AlertUtil.showAlert("Настройки успешно сохранены");
     }
 
-    /** Страница Настройки групп получателей */
+    /**
+     * Страница Настройки групп получателей
+     */
 
-    /** */
     @FXML
-    private ListView recipientsGroupList;
+    private TableView<StringProperty[]> tableRecipientsGroup;
+    @FXML
+    private TableColumn<StringProperty[], String> groupNameCol;
+    @FXML
+    private TableColumn<StringProperty[], String> recieversCol;
+    @FXML
+    ObservableList<StringProperty[]> recipientsGroupList = FXCollections.observableArrayList();
 
-    /** Добавление группы получателей */
+    /**
+     * Добавление группы получателей
+     */
     @FXML
     public void addRecipientsGroup(MouseEvent event) {
-
     }
-    /** Редактирование группы получателей */
+
+    /**
+     * Редактирование группы получателей
+     */
     @FXML
     public void editRecipientsGroup(MouseEvent event) {
 
     }
-    /** Удаление группы получателей */
+
+    /**
+     * Удаление группы получателей
+     */
     @FXML
     public void removeRecipientsGroup(MouseEvent event) {
 
@@ -189,7 +296,7 @@ public class SettingsController {
 
     @FXML
     void saveSettingsRecipients(MouseEvent event) {
-
+        ConfigUtil.setRecipients(recipientsGroupList);
         AlertUtil.showAlert("Настройки успешно сохранены");
     }
 

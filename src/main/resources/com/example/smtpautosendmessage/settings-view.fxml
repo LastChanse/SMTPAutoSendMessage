@@ -42,7 +42,7 @@
                      </font>
                   </Label>
                   <Button id="saveButton" layoutX="344.0" layoutY="454.0" mnemonicParsing="false" onMouseClicked="#saveSettingsSMTP" prefHeight="25.0" prefWidth="120.0" text="Сохранить" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="136.0" />
-                  <Button fx:id="closeButton" cancelButton="true" layoutX="466.0" layoutY="454.0" mnemonicParsing="false" onAction="#closeSettings" prefHeight="25.0" prefWidth="120.0" text="Отмена" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="10.0" />
+                  <Button cancelButton="true" layoutX="466.0" layoutY="454.0" mnemonicParsing="false" onAction="#closeSettings" prefHeight="25.0" prefWidth="120.0" text="Отмена" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="10.0" />
                   <Label text="Сервер SMTP: " AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="42.0">
                      <font>
                         <Font size="14.0" />
@@ -93,7 +93,15 @@
                   </Label>
                   <Button id="saveButton" mnemonicParsing="false" onMouseClicked="#saveSettingsRecipients" prefHeight="25.0" prefWidth="120.0" text="Сохранить" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="136.0" />
                   <Button cancelButton="true" mnemonicParsing="false" onAction="#closeSettings" prefHeight="25.0" prefWidth="120.0" text="Отмена" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="10.0" />
-                  <ListView fx:id="recipientsGroupList" layoutX="10.0" layoutY="80.0" prefHeight="256.0" prefWidth="378.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0" />
+                  <TableView fx:id="tableRecipientsGroup" editable="true" layoutX="14.0" layoutY="74.0" prefHeight="269.0" prefWidth="357.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="80.0" GridPane.rowIndex="1">
+                     <columns>
+                        <TableColumn fx:id="groupNameCol" prefWidth="75.0" text="Название группы" />
+                        <TableColumn fx:id="recieversCol" prefWidth="75.0" text="Список получателей" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
                   <Button layoutX="14.0" layoutY="37.0" mnemonicParsing="false" onMouseClicked="#addRecipientsGroup" text="Добавить" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
                   <Button layoutX="20.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#editRecipientsGroup" text="Изменить" AnchorPane.leftAnchor="90.0" AnchorPane.topAnchor="40.0" />
                   <Button layoutX="110.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#removeRecipientsGroup" text="Удалить" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="40.0" />

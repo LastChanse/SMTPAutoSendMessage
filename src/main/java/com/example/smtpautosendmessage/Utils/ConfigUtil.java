@@ -1,5 +1,9 @@
 package com.example.smtpautosendmessage.Utils;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 
 import java.io.*;
@@ -145,28 +149,47 @@ public class ConfigUtil {
     }
 
     /** Преобразование групп получателей из массива в строку */
-    static public String convertRecipientsGroupListToString(ArrayList arrayList) {
+    private static String convertRecipientsGroupListToString(ObservableList<StringProperty[]> arrayList) {
         String str = "";
         for (int i = 0; i<arrayList.size();i++)
         {
-            String[] strings = (String[]) arrayList.get(i);
-            str +=  "{{"+strings[0]+"}:{";
-            str +=  strings[1]+"}};";
+            String groupName = arrayList.get(i)[0].getValue();
+            String groupRecipients = arrayList.get(i)[1].getValue();
+            str +=  "{{"+groupName+"}:{";
+            str +=  groupRecipients+"}};";
         }
         return str;
     }
 
     /** Преобразование групп получателей из строки в массив */
-    static public ArrayList convertRecipientsGroupStringToList(String string) {
-        ArrayList recipientsGroupList = new ArrayList();
+    private static ObservableList<StringProperty[]> convertRecipientsGroupStringToList(String string) {
+        ObservableList<StringProperty[]> recipientsGroupList = FXCollections.observableArrayList();
+        if (string.isEmpty()|| string == null) { // Если строка пустая, то вернуть список с 1 пустым элементом
+            recipientsGroupList.add(new StringProperty[] {new SimpleStringProperty(""), new SimpleStringProperty("")});
+            return recipientsGroupList;
+        };
+        // Если строка есть, то создать и вернуть список по данным из строки
         String[] strings = string.split(";");
         for (String item : strings)
         {
             item = item.replace("{","").replace("}",""); // Удаление декоративных скобок
             String groupName = item.split(":")[0]; // Название группы получателей
             String groupEmails = item.split(":")[1]; // Почта группы получателей
-            recipientsGroupList.add(new String[] {groupName, groupEmails});
+            recipientsGroupList.add(new StringProperty[] {new SimpleStringProperty(groupName), new SimpleStringProperty(groupEmails)});
         }
         return recipientsGroupList;
+    }
+
+    /** Получить группы получателей в качестве списка */
+    public static ObservableList<StringProperty[]> getRecipients() {
+        return convertRecipientsGroupStringToList(config.getProperty("ydata.recipients","{{}:{}};"));
+    };
+
+    /** Сохранить список групп получателей */
+    public static void setRecipients(ObservableList<StringProperty[]> recipients) {
+        Properties newConfig = ConfigUtil.getConfig();
+        newConfig.setProperty("ydata.recipients", convertRecipientsGroupListToString(recipients));
+        setConfig(newConfig);
+        config = newConfig;
     }
 }
