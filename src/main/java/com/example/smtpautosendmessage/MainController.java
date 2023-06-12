@@ -1,20 +1,26 @@
 package com.example.smtpautosendmessage;
 
 import com.example.smtpautosendmessage.Utils.AlertUtil;
-import com.example.smtpautosendmessage.Utils.CharsetChangerUtil;
 import com.example.smtpautosendmessage.Utils.ConfigUtil;
+import javafx.application.HostServices;
+import javafx.application.Platform;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import javax.activation.*;
 import javax.mail.*;
@@ -24,9 +30,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Контроллер главного окна
@@ -40,8 +44,10 @@ public class MainController {
     /**
      * Основные элементы
      **/
+    @FXML
+    public ComboBox recipientComboBox;
     @FXML // Поля формы отправки письма
-    public TextField recipientField, prefixField, suffixField, titleField;
+    public TextField prefixField, suffixField, titleField;
     @FXML // Поле описания к письму
     public TextArea description;
 
@@ -56,15 +62,85 @@ public class MainController {
      * loadPropertiesFromConfig -- функция загрузки данных для отправки письма из конфига на форму отправки письма
      */
     private void loadPropertiesFromConfig() {
+        // Загрузка конфигурации
         if ((ConfigUtil.config) == null) {
             ConfigUtil.config = ConfigUtil.getConfig();
         }
         Properties config = ConfigUtil.config;
-        recipientField.setText(config.getProperty("mail.smtp.recipient"));
+
+        setupRecipientComboBox(); // настройка выпадающего меню получателей
+        // Загрузка данных из конфигурации
+        loadRecipientComboBox();
+        recipientComboBox.getEditor().setText(config.getProperty("mail.smtp.recipient"));
         prefixField.setText(config.getProperty("mail.smtp.title.prefix"));
         suffixField.setText(config.getProperty("mail.smtp.title.suffix"));
         titleField.setText(config.getProperty("mail.smtp.title.prefix") + generateTitle() + config.getProperty("mail.smtp.title.suffix"));
         description.setText(config.getProperty("mail.smtp.message"));
+    }
+
+    /**
+     * Загрузка данных выпадающего меню из конфигурации
+     */
+    public void loadRecipientComboBox() {
+        // Загрузка данных из конфигурации
+        recipientComboBox.setItems(FXCollections.observableArrayList());
+        // В списке поля получателей можно группу получателей выбрать по названию группы
+        ObservableList<StringProperty[]> groupsRecipients = ConfigUtil.getRecipients(); // Получение списка групп получателей
+        // Передача в выпадающее меню содержимого групп получателей без названий
+        for (StringProperty[] strings : groupsRecipients) {
+            recipientComboBox.getItems().add(strings[1].getValue());
+        }
+    }
+
+    /**
+     * Функция настройки выпадающего меню групп получателей
+     **/
+    private void setupRecipientComboBox() {
+        // Задание отображение названий групп и возвращение содержимого групп получателей
+        recipientComboBox.setCellFactory(new Callback<ListView<String>, ListCell<String>>() { // При вызове списка групп получателей
+            @Override
+            public ListCell<String> call(ListView<String> arg0) { // Вызов списка ячеек
+                return new ListCell<String>() { // Возвращать список ячеек
+                    private final Label label; // Поле текста
+
+                    {
+                        setContentDisplay(ContentDisplay.GRAPHIC_ONLY); // Отображать только содержимое
+                        label = new Label(); // Новое поле текста для каждой ячейки
+                    }
+
+                    @Override
+                    protected void updateItem(String item, boolean empty) { // Обновление элементов выпадающего меню
+                        super.updateItem(item, empty); // Наследование
+
+                        if (item == null || empty) { // Если элемент пуст
+                            setGraphic(null); // Не отображать
+                        } else { // Иначе
+                            String displayItem = ""; // Строка названия группы получателей
+                            ObservableList<StringProperty[]> groupsRecipients = ConfigUtil.getRecipients(); // Получение списка групп получателей
+                            for (StringProperty[] strings : groupsRecipients) { // Поиск названия группы получателей по списку получателей
+                                if (strings[1].getValue().equals(item)) {
+                                    displayItem = strings[0].getValue(); // Сохранить найденное название группы получателей
+                                    break;
+                                }
+                            }
+                            label.setText(displayItem); // Задать название группы получателей полю в ячейке выпадающего меню
+                            setGraphic(label); // Отобразить
+                        }
+                    }
+                };
+            }
+        });
+    }
+
+    /**
+     * Логика обработки изменения полей формы
+     **/
+
+    @FXML
+    public void onSelectRecipientsGroup() {
+        ObservableList<StringProperty[]> groupsRecipients = recipientComboBox.getItems(); // Получение списка групп получателей
+        int index = recipientComboBox.getSelectionModel().getSelectedIndex(); // Получение индекса выбранного элемента
+        recipientComboBox.getEditor().setText("gg");
     }
 
     @FXML
@@ -79,7 +155,7 @@ public class MainController {
 
     /**
      * Логика отправки писем
-     **/ // TODO: Отправить логику в MessageUtils
+     **/
     @FXML // Функция работающая при нажатии на кнопку "Отправить письмо"
     public void onSendButtonClick() {
         sendMessage(); // Отправка письма используя данные формы отправки письма
@@ -89,7 +165,7 @@ public class MainController {
      * sendMessage -- функция отправляет письмо используя данный формы отправки письма
      */
     private void sendMessage() {
-        if (recipientField.getText().equals("")) {
+        if (recipientComboBox.getEditor().getText().equals("")) {
             AlertUtil.showAlert("Поле получателей не может быть пустым", Alert.AlertType.ERROR);
             return;
         }
@@ -129,7 +205,7 @@ public class MainController {
             message.setRecipients(
                     Message.RecipientType.TO,
                     // Установить список тех кому посылается письмо через запятую (a@b.ru,c@d.com или a@b.ru если 1 получатель)
-                    InternetAddress.parse(recipientField.getText()));
+                    InternetAddress.parse(recipientComboBox.getEditor().getText()));
             // Установить тему письма
             message.setSubject(titleField.getText());
 
@@ -244,7 +320,7 @@ public class MainController {
      * Чистит форму
      */
     private void cleanForm() {
-        recipientField.setText("");
+        recipientComboBox.getEditor().setText("");
         prefixField.setText("");
         suffixField.setText("");
         titleField.setText("");
@@ -260,7 +336,7 @@ public class MainController {
     @FXML
     public void onLoadIntoPropertiesClick(ActionEvent actionEvent) {
         Properties config = ConfigUtil.config;
-        config.setProperty("mail.smtp.recipient", recipientField.getText());
+        config.setProperty("mail.smtp.recipient", recipientComboBox.getEditor().getText());
         config.setProperty("mail.smtp.title.prefix", prefixField.getText());
         config.setProperty("mail.smtp.title.suffix", suffixField.getText());
         config.setProperty("mail.smtp.message", description.getText());

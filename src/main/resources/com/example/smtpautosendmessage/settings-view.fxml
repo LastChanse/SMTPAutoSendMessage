@@ -102,9 +102,8 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </TableView>
-                  <Button layoutX="14.0" layoutY="37.0" mnemonicParsing="false" onMouseClicked="#addRecipientsGroup" text="Добавить" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
-                  <Button layoutX="20.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#editRecipientsGroup" text="Изменить" AnchorPane.leftAnchor="90.0" AnchorPane.topAnchor="40.0" />
-                  <Button layoutX="110.0" layoutY="50.0" mnemonicParsing="false" onMouseClicked="#removeRecipientsGroup" text="Удалить" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="40.0" />
+                  <TextField fx:id="filterField" layoutX="10.0" layoutY="40.0" prefHeight="26.0" prefWidth="296.0" promptText="Название группы" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="10.0" />
+                  <Label layoutX="14.0" layoutY="45.0" text="Фильтр:" AnchorPane.leftAnchor="10.0" />
                </children>
             </AnchorPane>
          </children>

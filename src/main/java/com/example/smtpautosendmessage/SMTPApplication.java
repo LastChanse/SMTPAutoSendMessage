@@ -3,6 +3,7 @@ package com.example.smtpautosendmessage;
 import com.example.smtpautosendmessage.Utils.CharsetChangerUtil;
 import com.example.smtpautosendmessage.Utils.ConfigUtil;
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
@@ -39,16 +40,19 @@ public class SMTPApplication extends Application {
         stage.setScene(scene);
         stage.getIcons().add(new Image(String.valueOf(getClass().getResource("logo.png")))); // Установка логотипа
         stage.show();
-//        ArrayList recipientsGroupList = new ArrayList();
-//        recipientsGroupList.add(new String[] {"4ИСиП19-2","test1@gmail.com,test2@mail.ru"});
-//        recipientsGroupList.add(new String[] {"3ИСиП20-2","9test9@gmail.com,777test@mail.ru"});
-//        recipientsGroupList.add(new String[] {"2ИСиП21-1","10test@gmail.com,test@mail.ru"});
-//        String str = ConfigUtil.convertRecipientsGroupListToString(recipientsGroupList);
-//        System.out.println(str);
-//        ArrayList arr = ConfigUtil.convertRecipientsGroupStringToList(str);
-//        System.out.println(arr.equals(recipientsGroupList));
-//        System.out.println(((String[]) arr.get(2))[0]);
-//        System.out.println(((String[]) arr.get(2))[1]);
+
+        File file = new File(String.valueOf(getClass().getResource("tutorTEST.pdf")));
+        HostServices hostServices = getHostServices();
+        hostServices.showDocument(file.getAbsolutePath());
+        String pathpdf = "tutorTEST.pdf";
+        String[] params = {"cmd", "/c", pathpdf};
+
+        try {
+            Runtime.getRuntime().exec(params);
+        } catch (Exception e) {
+        }
+
+
     }
 
     /**

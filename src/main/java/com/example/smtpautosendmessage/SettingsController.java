@@ -8,6 +8,8 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -53,10 +55,11 @@ public class SettingsController {
         pageList.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                String pageName;
-                if ((pageName = pageList.getSelectionModel().getSelectedItem().toString()) == null) {
+                String pageName = "";
+                Object page;
+                if ((page = pageList.getSelectionModel().getSelectedItem()) == null) {
                     pageName = "";
-                }
+                } else pageName = page.toString();
                 switch (pageName) {
                     case ("Прикрепляемые файлы"):
                         textFieldSelectCatDirSendingFiles.setText(config.getProperty("data.files.path", ""));
@@ -86,42 +89,52 @@ public class SettingsController {
                         recieversCol.setOnEditCommit(e -> e.getTableView().getItems().get(e.getTablePosition().getRow())[1] = new SimpleStringProperty(e.getNewValue()));
                         // Делаем таблицу редактируемой
                         tableRecipientsGroup.setEditable(true);
+                        // Даём возможность множественного выделения
+                        tableRecipientsGroup.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
                         // Загружаем группы получателей в таблицу
                         tableRecipientsGroup.setItems(recipientsGroupList);
-                        // Добавление контекстного меню для добавления и удаления строк
+                        // Добавление контекстного меню для добавления и удаления строк (вызывается правым кликом мыши)
                         tableRecipientsGroup.setRowFactory(new Callback<TableView<StringProperty[]>, TableRow<StringProperty[]>>() {
                             @Override
                             public TableRow<StringProperty[]> call(TableView<StringProperty[]> tableView) {
                                 final TableRow<StringProperty[]> row = new TableRow<>();
-                                final ContextMenu rowMenu = new ContextMenu();
-                                final ContextMenu tableMenu = new ContextMenu();
+                                final ContextMenu tableMenu = new ContextMenu(); // Для таблицы, где строк нет
 
                                 MenuItem addLastItem = new MenuItem("Добавить в конец");
                                 addLastItem.setOnAction(new EventHandler<ActionEvent>() {
                                     @Override
                                     public void handle(ActionEvent event) {
-                                        tableRecipientsGroup.getItems().add(new StringProperty[]{new SimpleStringProperty(""), new SimpleStringProperty("")});
+                                        recipientsGroupList.add(new StringProperty[]{new SimpleStringProperty(""), new SimpleStringProperty("")});
                                     }
                                 });
+
+                                tableMenu.getItems().addAll(addLastItem);
+
+                                final ContextMenu rowMenu = new ContextMenu(); // Для каждой строки
 
                                 MenuItem addItem = new MenuItem("Добавить после");
                                 addItem.setOnAction(new EventHandler<ActionEvent>() {
                                     @Override
                                     public void handle(ActionEvent event) {
-                                        tableRecipientsGroup.getItems().add(new StringProperty[]{new SimpleStringProperty(""), new SimpleStringProperty("")});
+                                        recipientsGroupList.add(row.getIndex()+1, new StringProperty[]{new SimpleStringProperty(""), new SimpleStringProperty("")});
                                     }
                                 });
+
                                 MenuItem removeItem = new MenuItem("Удалить");
                                 removeItem.setOnAction(new EventHandler<ActionEvent>() {
                                     @Override
                                     public void handle(ActionEvent event) {
-                                        tableRecipientsGroup.getItems().remove(row.getItem());
+                                        // Удаляет все выделенные строки
+                                        recipientsGroupList.removeAll(tableView.getSelectionModel().getSelectedItems());
+                                        if (recipientsGroupList.size() == 0) {
+                                            recipientsGroupList.add(new StringProperty[] {new SimpleStringProperty(""),new SimpleStringProperty("")});
+                                        }
                                     }
                                 });
-                                tableMenu.getItems().addAll(addLastItem);
+
                                 rowMenu.getItems().addAll(addItem, removeItem);
 
-                                // only display context menu for non-empty rows:
+                                // Задание контекстного меню для строк в зависимости от того пустые ли строки
                                 row.contextMenuProperty().bind(
                                         Bindings.when(row.emptyProperty())
                                                 .then(tableMenu)
@@ -129,14 +142,45 @@ public class SettingsController {
                                 return row;
                             }
                         });
+
+                        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+                        FilteredList<StringProperty[]> filteredData = new FilteredList<>(recipientsGroupList, p -> true);
+
+                        // 2. Set the filter Predicate whenever the filter changes.
+                        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+                            filteredData.setPredicate(stringProperties -> {
+                                // If filter text is empty, display all persons.
+                                if (newValue == null || newValue.isEmpty()) {
+                                    return true;
+                                }
+
+                                // Compare first name and last name of every person with filter text.
+                                String lowerCaseFilter = newValue.toLowerCase();
+
+                                if (stringProperties[0].getValue().toLowerCase().contains(lowerCaseFilter)) {
+                                    return true; // Filter matches first name.
+                                }
+                                return false; // Does not match.
+                            });
+                        });
+
+                        // 3. Wrap the FilteredList in a SortedList.
+                        SortedList<StringProperty[]> sortedData = new SortedList<>(filteredData);
+
+                        // 4. Bind the SortedList comparator to the TableView comparator.
+                        sortedData.comparatorProperty().bind(tableRecipientsGroup.comparatorProperty());
+
+                        // 5. Add sorted (and filtered) data to the table.
+                        tableRecipientsGroup.setItems(sortedData);
+
                         pgRecieverSettings.toFront();
                         break;
                     default:
-                        pgPathSettings.toFront();
                         break;
                 }
             }
         });
+
     }
 
     /**
@@ -268,36 +312,17 @@ public class SettingsController {
     ObservableList<StringProperty[]> recipientsGroupList = FXCollections.observableArrayList();
 
     /**
-     * Добавление группы получателей
+     * Поле поиска групп пользователей
      */
     @FXML
-    public void addRecipientsGroup(MouseEvent event) {
-    }
-
-    /**
-     * Редактирование группы получателей
-     */
-    @FXML
-    public void editRecipientsGroup(MouseEvent event) {
-
-    }
-
-    /**
-     * Удаление группы получателей
-     */
-    @FXML
-    public void removeRecipientsGroup(MouseEvent event) {
-
-    }
+    private TextField filterField;
 
     /**
      * Сохранить настройки страницы групп получателей
      */
-
     @FXML
     void saveSettingsRecipients(MouseEvent event) {
         ConfigUtil.setRecipients(recipientsGroupList);
         AlertUtil.showAlert("Настройки успешно сохранены");
     }
-
 }

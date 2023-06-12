@@ -172,9 +172,8 @@ public class ConfigUtil {
         String[] strings = string.split(";");
         for (String item : strings)
         {
-            item = item.replace("{","").replace("}",""); // Удаление декоративных скобок
-            String groupName = item.split(":")[0]; // Название группы получателей
-            String groupEmails = item.split(":")[1]; // Почта группы получателей
+            String groupName = item.split(":")[0].replace("{","").replace("}",""); // Название группы получателей
+            String groupEmails = item.split(":")[1].replace("{","").replace("}",""); // Почта группы получателей
             recipientsGroupList.add(new StringProperty[] {new SimpleStringProperty(groupName), new SimpleStringProperty(groupEmails)});
         }
         return recipientsGroupList;
