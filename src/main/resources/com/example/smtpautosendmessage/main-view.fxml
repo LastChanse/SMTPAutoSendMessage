@@ -3,34 +3,48 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smtpautosendmessage.MainController">
-    <MenuBar maxHeight="25.0" minHeight="25.0" prefHeight="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.smtpautosendmessage.MainController">
+    <MenuBar maxHeight="25.0" minHeight="25.0" prefHeight="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+          AnchorPane.topAnchor="0.0">
         <Menu mnemonicParsing="false" text="Конфигурация">
-            <MenuItem mnemonicParsing="false" onAction="#onSavePropertiesClick" text="Экспортировать" />
-            <MenuItem mnemonicParsing="false" onAction="#onLoadPropertiesClick" text="Импортировать" />
+            <MenuItem mnemonicParsing="false" onAction="#onSavePropertiesClick" text="Экспортировать"/>
+            <MenuItem mnemonicParsing="false" onAction="#onLoadPropertiesClick" text="Импортировать"/>
         </Menu>
         <Menu mnemonicParsing="false" text="Форма">
-            <MenuItem mnemonicParsing="false" onAction="#onCleanFormClick" text="Очистить" />
-            <MenuItem mnemonicParsing="false" onAction="#onLoadFromPropertiesClick" text="Загрузить из конфигурации" />
-            <MenuItem mnemonicParsing="false" onAction="#onLoadIntoPropertiesClick" text="Сохранить в конфигурацию" />
+            <MenuItem mnemonicParsing="false" onAction="#onCleanFormClick" text="Очистить"/>
+            <MenuItem mnemonicParsing="false" onAction="#onLoadFromPropertiesClick" text="Загрузить из конфигурации"/>
+            <MenuItem mnemonicParsing="false" onAction="#onLoadIntoPropertiesClick" text="Сохранить в конфигурацию"/>
         </Menu>
         <Menu>
             <graphic>
-                <Label onMouseClicked="#onSettingsClick" text="Настройки" />
+                <Label onMouseClicked="#onSettingsClick" text="Настройки"/>
             </graphic>
         </Menu>
-        <Menu mnemonicParsing="false" onAction="#onTutorialClick" text="Руководство" />
+        <Menu mnemonicParsing="false">
+            <graphic>
+                <Label onMouseClicked="#onTutorialClick" text="Руководство"/>
+            </graphic>
+        </Menu>
     </MenuBar>
-    <Label layoutX="16.0" layoutY="24.0" text="Получатель(и)" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="44.0" />
-    <ComboBox fx:id="recipientComboBox" editable="true" onMouseClicked="#loadRecipientComboBox" promptText="mail1@mail.ru,email2@gmail.com,email@yandex..." AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0" />
-    <Label layoutX="16.0" layoutY="24.0" text="Префикс" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="84.0" />
-    <TextField fx:id="prefixField" onKeyTyped="#prefixFieldChange" promptText="Файлы:" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="80.0" />
-    <Label layoutX="16.0" layoutY="24.0" text="Суффикс" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="124.0" />
-    <TextField fx:id="suffixField" onKeyTyped="#suffixFieldChange" promptText=". 4ИСиП19-2" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0" />
-    <Label layoutX="16.0" layoutY="24.0" text="Заголовок" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="164.0" />
-    <TextField fx:id="titleField" promptText="Файлы: ПР1.pdf, ПР2.pdf, ПР3.pdf. 4ИСиП19-2" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="160.0" />
-    <Label layoutX="25.0" layoutY="193.0" text="Описание к письму" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="200.0" />
-    <TextArea fx:id="description" promptText="Выполнил работу студент НРТК" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="220.0" />
+    <Label layoutX="16.0" layoutY="24.0" text="Получатель(и):" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="44.0"/>
+    <ComboBox fx:id="recipientComboBox" editable="true" onMouseClicked="#loadRecipientComboBox"
+              promptText="mail1@mail.ru,email2@gmail.com,email@yandex..." AnchorPane.leftAnchor="100.0"
+              AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0"/>
+    <Label layoutX="16.0" layoutY="24.0" text="Префикс:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="84.0"/>
+    <TextField fx:id="prefixField" onKeyTyped="#prefixFieldChange" promptText="Файлы:" AnchorPane.leftAnchor="70.0"
+               AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="80.0"/>
+    <Label layoutX="16.0" layoutY="24.0" text="Суффикс:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="124.0"/>
+    <TextField fx:id="suffixField" onKeyTyped="#suffixFieldChange" promptText=". 4ИСиП19-2" AnchorPane.leftAnchor="70.0"
+               AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0"/>
+    <Label layoutX="16.0" layoutY="24.0" text="Заголовок:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="164.0"/>
+    <TextField fx:id="titleField" promptText="Файлы: ПР1.pdf, ПР2.pdf, ПР3.pdf. 4ИСиП19-2" AnchorPane.leftAnchor="80.0"
+               AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="160.0"/>
+    <Label layoutX="25.0" layoutY="193.0" text="Описание к письму:" AnchorPane.leftAnchor="10.0"
+           AnchorPane.topAnchor="200.0"/>
+    <TextArea fx:id="description" promptText="Выполнил работу студент НРТК" AnchorPane.bottomAnchor="60.0"
+              AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="220.0"/>
 
-    <Button onAction="#onSendButtonClick" prefHeight="40.0" text="Отправить письмо" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+    <Button onAction="#onSendButtonClick" prefHeight="40.0" text="Отправить письмо" AnchorPane.bottomAnchor="10.0"
+            AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"/>
 </AnchorPane>

@@ -17,6 +17,7 @@ import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -36,11 +37,6 @@ import java.util.*;
  * Контроллер главного окна
  */
 public class MainController {
-    // DONE: Сделать так, чтобы из конфига подтягивалось в графику параметры письма
-    // TODO: Сделать окно ввода параметров SMTP-сервера и чтобы из конфига подтягивалось в графику параметры SMTP-сервера
-    // DONE: Сделать отправку писем от графических параметров, а не напрямую из конфига
-    // TODO: Сделать группы получателей
-    // DONE: Сделать сообщение об успехе сохранения данных в конфигурационный файл
     /**
      * Основные элементы
      **/
@@ -242,7 +238,7 @@ public class MainController {
 
             AlertUtil.showAlert("Письмо успешно отправлено", Alert.AlertType.INFORMATION);
         } catch (MessagingException e) {
-            AlertUtil.showAlert("Письмо не отправлено", Alert.AlertType.ERROR);
+            AlertUtil.showAlert("Письмо не отправлено", Alert.AlertType.ERROR, e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -360,6 +356,7 @@ public class MainController {
             stage.initModality(Modality.APPLICATION_MODAL); // Делаем окно модальным и блокируем основное окно
             stage.showAndWait(); // Показываем окно и ждём пока его не закроют
         } catch (IOException e) {
+            AlertUtil.showAlert(e.getMessage(), Alert.AlertType.ERROR);
             throw new RuntimeException(e);
         }
     }
@@ -368,6 +365,19 @@ public class MainController {
      * Руководство
      **/
     @FXML
-    public void onTutorialClick(ActionEvent actionEvent) {
+    public void onTutorialClick(MouseEvent mouseEvent) {
+        try {
+            Stage stage = new Stage();
+            Scene scene = new Scene(new FXMLLoader().load(getClass().getResource("tutorial-view.fxml")), 900, 400);
+            stage.setMinHeight(400);
+            stage.setMinWidth(900);
+            stage.setTitle("Руководство пользователя");
+            stage.setScene(scene);
+            stage.getIcons().add(new Image(String.valueOf(getClass().getResource("logo.png")))); // Установка логотипа
+            stage.show(); // Показываем окно
+        } catch (IOException e) {
+            AlertUtil.showAlert(e.getMessage(), Alert.AlertType.ERROR);
+            throw new RuntimeException(e);
+        }
     }
 }

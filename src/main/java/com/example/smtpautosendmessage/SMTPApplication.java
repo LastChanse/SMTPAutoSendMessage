@@ -14,6 +14,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -24,6 +25,8 @@ import java.util.Properties;
  @version 0.1.0
  */
 public class SMTPApplication extends Application {
+    public static HostServices hostServicesStatic;
+
     /**
      * Инициализирует конфигурационный файл, запускает главное окно приложения
      * @param stage Окно приложения
@@ -40,19 +43,7 @@ public class SMTPApplication extends Application {
         stage.setScene(scene);
         stage.getIcons().add(new Image(String.valueOf(getClass().getResource("logo.png")))); // Установка логотипа
         stage.show();
-
-        File file = new File(String.valueOf(getClass().getResource("tutorTEST.pdf")));
-        HostServices hostServices = getHostServices();
-        hostServices.showDocument(file.getAbsolutePath());
-        String pathpdf = "tutorTEST.pdf";
-        String[] params = {"cmd", "/c", pathpdf};
-
-        try {
-            Runtime.getRuntime().exec(params);
-        } catch (Exception e) {
-        }
-
-
+        hostServicesStatic = getHostServices();
     }
 
     /**
