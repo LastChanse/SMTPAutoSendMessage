@@ -218,7 +218,7 @@ public class MainController {
             multipart.addBodyPart(messageBodyPart);
 
             // Создание вложений
-            File dir = new File("./sendingFiles"); // Путь к папке с прикрепляемыми файлами
+            File dir = new File(config.getProperty("data.files.path")); // Путь к папке с прикрепляемыми файлами
             File[] arrFiles = dir.listFiles(); // Получение списка файлов
             List<File> lst = Arrays.asList(arrFiles); // Список файлов в директории
             for (File f :
