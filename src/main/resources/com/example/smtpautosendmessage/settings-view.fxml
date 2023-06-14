@@ -106,7 +106,7 @@
                   <CheckBox fx:id="checkBoxSSL" layoutX="20.0" layoutY="110.0" mnemonicParsing="false" text="Использовать SSL" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="180.0" />
                   <CheckBox fx:id="checkBoxTLS" layoutX="210.0" layoutY="110.0" mnemonicParsing="false" text="Использовать TLS" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="200.0" />
                   <CheckBox fx:id="checkBoxSSLCheckServer" layoutX="20.0" layoutY="210.0" mnemonicParsing="false" text="Проверять SSL сертификат сервера" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="220.0" />
-                  <Label layoutX="20.0" layoutY="162.0" text="Список довереных серверов:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="240.0">
+                  <Label layoutX="20.0" layoutY="162.0" text="Список доверенных серверов:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="240.0">
                      <font>
                         <Font size="14.0" />
                      </font>

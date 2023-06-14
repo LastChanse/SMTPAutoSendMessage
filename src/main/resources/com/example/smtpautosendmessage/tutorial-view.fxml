@@ -12,7 +12,7 @@
          <children>
             <AnchorPane fx:id="pgServerTutorial" layoutX="10.0" layoutY="10.0" prefHeight="290.0" prefWidth="400.0" style="-fx-background-color: #fff;">
                <children>
-                  <Label fx:id="serverTitle" alignment="CENTER" text="Список гиперссылок на инстуркции для настройки SMTP-серверов" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="10.0">
+                  <Label fx:id="serverTitle" alignment="CENTER" text="Список гиперссылок на инструкции для настройки SMTP-серверов" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="10.0">
                      <font>
                         <Font size="18.0" />
                      </font>
