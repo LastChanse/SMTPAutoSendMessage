@@ -8,7 +8,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 /**
  * Контроллер окна руководства пользователя
@@ -20,33 +19,35 @@ public class TutorialController {
     @FXML
     private AnchorPane pgHomeTutorial, pgServerTutorial, pgClientTutorial;
 
+    /** Предварительные действия над элементами окна руководства пользователя при инициализации контроллера */
     public void initialize() {
+        // Делаем автоматический перенос строк для заголовков и описания руководства пользователя
         homeTitle.setWrapText(true);
         serverTitle.setWrapText(true);
         clientTitle.setWrapText(true);
         clientDescription.setWrapText(true);
 
-        imgParent.widthProperty().addListener((obs, oldVal, newVal) -> {
-            clientTutorImage.setFitWidth((Double) newVal-10);
-        });
-        imgParent.heightProperty().addListener((obs, oldVal, newVal) -> {
-                clientTutorImage.setFitHeight((Double) newVal - 10);
-        });
+        // При изменении размеров окна, менять размеры изображения
+        imgParent.widthProperty().addListener((obs, oldVal, newVal) -> clientTutorImage.setFitWidth((Double) newVal-10));
+        imgParent.heightProperty().addListener((obs, oldVal, newVal) -> clientTutorImage.setFitHeight((Double) newVal - 10));
+
+        // Запрет на изменения соотношения сторон изображения
         clientTutorImage.setPreserveRatio(true);
+        // Задание первой отображаемой страницы
         pgHomeTutorial.toFront();
     }
 
-    public void openPgServer(MouseEvent event) {
+    public void openPgServer() {
         pgServerTutorial.toFront();
     }
 
-    public void openPgClient(MouseEvent event) {
+    public void openPgClient() {
         numStepPageClient = 1;
         updateClientTutorPg();
         pgClientTutorial.toFront();
     }
 
-    public void openPgHome(MouseEvent event) {
+    public void openPgHome() {
         pgHomeTutorial.toFront();
     }
 
@@ -84,7 +85,7 @@ public class TutorialController {
             "Окно \"Руководство\" > Страница \"Общее руководство по приложению\""
     };
     String[] descriptionPageClient = new String[] {
-            "В данном окне можно сформировать и отправить письмо. Поле \"Получател(и):\" можно заполнить вручную или выбрать в выпадающем списке группу получателей. Поле \"Заголовок(и):\" формируется из полей \"Суффикс:\" и \"Префикс:\", а также из названий прикрепляемых файлов.",
+            "В данном окне можно сформировать и отправить письмо. Поле \"Получатель(и):\" можно заполнить вручную или выбрать в выпадающем списке группу получателей. Поле \"Заголовок(и):\" формируется из полей \"Суффикс:\" и \"Префикс:\", а также из названий прикрепляемых файлов.",
             "В данном меню кнопка \"Экспортировать\" позволяет сохранить копию конфигурационного файла. Кнопка \"Импортировать\" позволяет загрузить настройки выбранного конфигурационного файла, текущий конфигурационный файл будет перезаписан. Копии не перезаписываются.",
             "В данном меню кнопка \"Очистить\" стирает все данные с полей формы. Кнопка \"Загрузить из конфигурации\" позволяет загрузить данные полей формы из конфигурации. Кнопка \"Сохранить в конфигурацию\" позволяет сохранить данные полей формы в конфигурацию.",
             "В данном окне можно настроить отправляемые файлы, группы получателей и SMTP подключение к серверу, которое нужно смотреть в меню \"Руководство\" > Страница \"Список гиперссылок на инструкции для настройки SMTP-серверов\".",
@@ -113,12 +114,12 @@ public class TutorialController {
 
     }
 
-    public void nextStepClient(MouseEvent event) {
+    public void nextStepClient() {
         numStepPageClient++;
         updateClientTutorPg();
     }
 
-    public void previousStepClient(MouseEvent event) {
+    public void previousStepClient() {
         numStepPageClient--;
         updateClientTutorPg();
     }

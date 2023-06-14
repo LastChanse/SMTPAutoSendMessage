@@ -7,10 +7,9 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -85,7 +84,7 @@ public class ConfigUtil {
             AlertUtil.showAlert("Конфигурация не найдена в файле:\n\"" + filePath + "\"", Alert.AlertType.ERROR);
             return null;
         } catch (IOException ex) {
-            AlertUtil.showAlert(ex.getMessage() + "\n\n" + ex.getStackTrace(), Alert.AlertType.ERROR);
+            AlertUtil.showAlert(ex.getMessage() + "\n\n" + Arrays.toString(ex.getStackTrace()), Alert.AlertType.ERROR);
             return null;
         }
         return properties;
@@ -141,7 +140,7 @@ public class ConfigUtil {
             AlertUtil.showAlert("Конфигурация не найдена в файле:\n\"" + path + "\"", Alert.AlertType.ERROR);
             return;
         } catch (IOException ex) {
-            AlertUtil.showAlert(ex.getMessage() + "\n\n" + ex.getStackTrace(), Alert.AlertType.ERROR);
+            AlertUtil.showAlert(ex.getMessage() + "\n\n" + Arrays.toString(ex.getStackTrace()), Alert.AlertType.ERROR);
             return;
         }
         ConfigUtil.config = properties;
@@ -150,24 +149,23 @@ public class ConfigUtil {
 
     /** Преобразование групп получателей из массива в строку */
     private static String convertRecipientsGroupListToString(ObservableList<StringProperty[]> arrayList) {
-        String str = "";
-        for (int i = 0; i<arrayList.size();i++)
-        {
-            String groupName = arrayList.get(i)[0].getValue();
-            String groupRecipients = arrayList.get(i)[1].getValue();
-            str +=  "{{"+groupName+"}:{";
-            str +=  groupRecipients+"}};";
+        StringBuilder str = new StringBuilder();
+        for (StringProperty[] stringProperties : arrayList) {
+            String groupName = stringProperties[0].getValue();
+            String groupRecipients = stringProperties[1].getValue();
+            str.append("{{").append(groupName).append("}:{");
+            str.append(groupRecipients).append("}};");
         }
-        return str;
+        return str.toString();
     }
 
     /** Преобразование групп получателей из строки в массив */
     private static ObservableList<StringProperty[]> convertRecipientsGroupStringToList(String string) {
         ObservableList<StringProperty[]> recipientsGroupList = FXCollections.observableArrayList();
-        if (string.isEmpty()|| string == null) { // Если строка пустая, то вернуть список с 1 пустым элементом
+        if (string.isEmpty()) { // Если строка пустая, то вернуть список с 1 пустым элементом
             recipientsGroupList.add(new StringProperty[] {new SimpleStringProperty(""), new SimpleStringProperty("")});
             return recipientsGroupList;
-        };
+        }
         // Если строка есть, то создать и вернуть список по данным из строки
         String[] strings = string.split(";");
         for (String item : strings)
@@ -182,11 +180,12 @@ public class ConfigUtil {
     /** Получить группы получателей в качестве списка */
     public static ObservableList<StringProperty[]> getRecipients() {
         return convertRecipientsGroupStringToList(config.getProperty("ydata.recipients","{{}:{}};"));
-    };
+    }
 
     /** Сохранить список групп получателей */
     public static void setRecipients(ObservableList<StringProperty[]> recipients) {
         Properties newConfig = ConfigUtil.getConfig();
+        assert newConfig != null;
         newConfig.setProperty("ydata.recipients", convertRecipientsGroupListToString(recipients));
         setConfig(newConfig);
         config = newConfig;

@@ -35,7 +35,7 @@
                      </children>
                   </AnchorPane>
                </children></AnchorPane>
-            <AnchorPane fx:id="pgRecieverSettings" layoutX="10.0" layoutY="10.0" prefHeight="290.0" prefWidth="400.0" style="-fx-background-color: #fff;">
+            <AnchorPane fx:id="pgReceiverSettings" layoutX="10.0" layoutY="10.0" prefHeight="290.0" prefWidth="400.0" style="-fx-background-color: #fff;">
                <children>
                   <Label text="Группы получателей" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <font>
@@ -47,7 +47,7 @@
                   <TableView fx:id="tableRecipientsGroup" editable="true" layoutX="14.0" layoutY="74.0" prefHeight="269.0" prefWidth="357.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="80.0" GridPane.rowIndex="1">
                      <columns>
                         <TableColumn fx:id="groupNameCol" prefWidth="75.0" text="Название группы" />
-                        <TableColumn fx:id="recieversCol" prefWidth="75.0" text="Список получателей" />
+                        <TableColumn fx:id="receiversCol" prefWidth="75.0" text="Список получателей" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

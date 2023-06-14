@@ -2,6 +2,9 @@ package com.example.smtpautosendmessage.Utils;
 
 import javafx.scene.control.Alert;
 
+/**
+ * Класс для создания и показа диалоговых окон
+ */
 public class AlertUtil {
     /**
      * showAlert -- функция отображения всплывающих сообщений
@@ -14,7 +17,7 @@ public class AlertUtil {
     }
 
     /**
-     * showAlert -- функция отображения всплывающих сообщений с заданым типом сообщений
+     * showAlert -- функция отображения всплывающих сообщений с заданным типом сообщений
      * @param headMessage -- заголовок сообщения
      * @param alertType -- типа сообщения
      */
@@ -24,7 +27,7 @@ public class AlertUtil {
         alert.show();
     }
     /**
-     * showAlert -- функция отображения всплывающих сообщений с заданым типом сообщений
+     * showAlert -- функция отображения всплывающих сообщений с заданным типом сообщений
      * @param headMessage -- заголовок сообщения
      * @param alertType -- типа сообщения
      * @param message -- текст сообщения

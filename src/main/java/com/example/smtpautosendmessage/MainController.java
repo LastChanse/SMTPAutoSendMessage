@@ -2,21 +2,14 @@ package com.example.smtpautosendmessage;
 
 import com.example.smtpautosendmessage.Utils.AlertUtil;
 import com.example.smtpautosendmessage.Utils.ConfigUtil;
-import javafx.application.HostServices;
-import javafx.application.Platform;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -37,22 +30,26 @@ import java.util.*;
  * Контроллер главного окна
  */
 public class MainController {
-    /**
-     * Основные элементы
-     **/
+    /*
+      Основные элементы
+     */
+    /** Поле получателей с выбором групп получателей из выпадающего меню */
     @FXML
     public ComboBox recipientComboBox;
-    @FXML // Поля формы отправки письма
+    /** Поля префикс, суффикс и заголовок письма */
+    @FXML
     public TextField prefixField, suffixField, titleField;
-    @FXML // Поле описания к письму
+    /** Поле описания к письму */
+    @FXML
     public TextArea description;
 
+    /** Загрузка данных с формы при инициализации контроллера */
     @FXML
     public void initialize() {
         loadPropertiesFromConfig();
     }
 
-    /** Логика формы заполнения письма **/
+    /* Логика формы заполнения письма **/
 
     /**
      * loadPropertiesFromConfig -- функция загрузки данных для отправки письма из конфига на форму отправки письма
@@ -65,6 +62,7 @@ public class MainController {
         setupRecipientComboBox(); // настройка выпадающего меню получателей
         // Загрузка данных из конфигурации
         loadRecipientComboBox();
+        assert config != null;
         recipientComboBox.getEditor().setText(config.getProperty("mail.smtp.recipient"));
         prefixField.setText(config.getProperty("mail.smtp.title.prefix"));
         suffixField.setText(config.getProperty("mail.smtp.title.suffix"));
@@ -126,25 +124,23 @@ public class MainController {
         });
     }
 
-    /**
-     * Логика обработки изменения полей формы
-     **/
+    /*
+      Логика обработки изменения полей формы
+     */
 
     /**
      * Формирование заголовка при изменении префикса
-     * @param keyEvent -- событие нажатия на кнопку
      */
     @FXML
-    public void prefixFieldChange(KeyEvent keyEvent) {
+    public void prefixFieldChange() {
         titleField.setText(prefixField.getText() + generateTitle() + suffixField.getText());
     }
 
     /**
      * Формирование заголовка при изменении суффикса
-     * @param keyEvent -- событие нажатия на кнопку
      */
     @FXML
-    public void suffixFieldChange(KeyEvent keyEvent) {
+    public void suffixFieldChange() {
         titleField.setText(prefixField.getText() + generateTitle() + suffixField.getText());
     }
 
@@ -165,12 +161,13 @@ public class MainController {
             return;
         }
         if ((ConfigUtil.config) == null) {
-            ConfigUtil.config = ConfigUtil.getConfig(); // Получение конфига и, при необходимости, генерация конфига
+            ConfigUtil.config = ConfigUtil.getConfig(); // Получение конфига и, при необходимости, генерации конфига
         }
         Properties config = ConfigUtil.config; // Загрузка конфига в переменную
 
-        // Упаковка настроек подключения к SMTP-серверу в одну переменную настроек
+        // Упаковка настроек подключения к SMTP-серверу в одну переменную настройках
         Properties props = new Properties();
+        assert config != null;
         props.put("mail.smtp.auth", config.get("mail.smtp.auth")); // Наличие авторизации (true или false)
         props.put("mail.smtp.starttls.enable", config.get("mail.smtp.starttls.enable")); // Использовать tls (true или false)
         props.put("mail.smtp.host", config.get("mail.smtp.host")); // Адрес сервера (smtp.mail.ru , 192.168.0.5 или подобное)
@@ -218,8 +215,8 @@ public class MainController {
 
             // Создание вложений
             File dir = new File(config.getProperty("data.files.path")); // Путь к папке с прикрепляемыми файлами
-            File[] arrFiles = dir.listFiles(); // Получение списка файлов
-            List<File> lst = Arrays.asList(arrFiles); // Список файлов в директории
+            File[] lst = dir.listFiles(); // Список файлов в директории
+            assert lst != null;
             for (File f :
                     lst) { // Добавление во вложения каждого файла
                 messageBodyPart = new MimeBodyPart(); // Тело вложения
@@ -260,22 +257,25 @@ public class MainController {
             AlertUtil.showAlert("Путь к папке с отправляемыми файлами не верен:\n" + pathToSendingFiles, Alert.AlertType.ERROR);
             return " "; // Прекратить выполнение функции
         }
-        File[] arrFiles = dir.listFiles();
-        List<File> lst = Arrays.asList(arrFiles);
-        StringBuffer stringBuffer = new StringBuffer();
+        File[] lst = dir.listFiles();
+        StringBuilder stringBuffer = new StringBuilder();
+        assert lst != null;
         for (File f :
                 lst) {
-            stringBuffer.append(f.getName().split("\\.")[0] + ", ");
+            stringBuffer.append(f.getName().split("\\.")[0]).append(", ");
         }
 
         return stringBuffer.substring(0, stringBuffer.length() - 2);
     }
-    /** Логика меню **/
+    /* Логика меню **/
+    /*
+      Конфигурация
+     */
     /**
-     * Конфигурация
-     **/
+     * Экспорт файла конфигурации
+     */
     @FXML
-    public void onSavePropertiesClick(ActionEvent actionEvent) {
+    public void onSavePropertiesClick() {
         FileChooser fileChooser = new FileChooser();//Класс работы с диалогом выборки и сохранения
         fileChooser.setTitle("Экспорт конфигурации");//Заголовок диалога
         FileChooser.ExtensionFilter extFilter =
@@ -288,8 +288,11 @@ public class MainController {
         }
     }
 
+    /**
+     * Импорт файла конфигурации
+     */
     @FXML
-    public void onLoadPropertiesClick(ActionEvent actionEvent) {
+    public void onLoadPropertiesClick() {
         FileChooser fileChooser = new FileChooser();//Класс работы с диалогом выборки и сохранения
         fileChooser.setTitle("Импорт конфигурации");//Заголовок диалога
         FileChooser.ExtensionFilter extFilter =
@@ -303,18 +306,15 @@ public class MainController {
         }
     }
 
-    /**
-     * Форма
-     **/
-    @FXML
-    public void onCleanFormClick(ActionEvent actionEvent) {
-        cleanForm();
-    }
+    /*
+      Форма
+     */
 
     /**
-     * Чистит форму
+     * Очистка формы
      */
-    private void cleanForm() {
+    @FXML
+    public void onCleanFormClick() {
         recipientComboBox.getEditor().setText("");
         prefixField.setText("");
         suffixField.setText("");
@@ -322,16 +322,20 @@ public class MainController {
         description.setText("");
     }
 
-    /** Загружает данные из конфигурации в форму */
+    /**
+     * Загрузка данных из конфигурации в форму
+     */
     @FXML
-    public void onLoadFromPropertiesClick(ActionEvent actionEvent) {
+    public void onLoadFromPropertiesClick() {
         loadPropertiesFromConfig();
         AlertUtil.showAlert("Данные полей формы успешно загружены из конфигурации.", Alert.AlertType.INFORMATION);
     }
 
-    /** Сохраняет данные из формы в конфигурацию */
+    /**
+     * Сохранение данных из формы в конфигурацию
+     */
     @FXML
-    public void onLoadIntoPropertiesClick(ActionEvent actionEvent) {
+    public void onLoadIntoPropertiesClick() {
         Properties config = ConfigUtil.config;
         config.setProperty("mail.smtp.recipient", recipientComboBox.getEditor().getText());
         config.setProperty("mail.smtp.title.prefix", prefixField.getText());
@@ -341,14 +345,17 @@ public class MainController {
         AlertUtil.showAlert("Данные полей формы успешно сохранены в конфигурацию.", Alert.AlertType.INFORMATION);
     }
 
+    /*
+      Настройки
+     */
     /**
-     * Настройки
-     **/
+     * Запуск окна настроек по нажатию по меню "Настройки"
+     */
     @FXML
     public void onSettingsClick() {
         try {
             Stage stage = new Stage();
-            Scene scene = new Scene(new FXMLLoader().load(getClass().getResource("settings-view.fxml")), 800, 400);
+            Scene scene = new Scene(new FXMLLoader().load(Objects.requireNonNull(getClass().getResource("settings-view.fxml"))), 800, 400);
             stage.setMinHeight(400);
             stage.setMinWidth(600);
             stage.setTitle("Настройки");
@@ -362,14 +369,17 @@ public class MainController {
         }
     }
 
+    /*
+      Руководство
+     */
     /**
-     * Руководство
-     **/
+     * Запуск окна руководства пользователя по нажатию по меню "Руководство"
+     */
     @FXML
-    public void onTutorialClick(MouseEvent mouseEvent) {
+    public void onTutorialClick() {
         try {
             Stage stage = new Stage();
-            Scene scene = new Scene(new FXMLLoader().load(getClass().getResource("tutorial-view.fxml")), 900, 400);
+            Scene scene = new Scene(new FXMLLoader().load(Objects.requireNonNull(getClass().getResource("tutorial-view.fxml"))), 900, 400);
             stage.setMinHeight(400);
             stage.setMinWidth(900);
             stage.setTitle("Руководство пользователя");

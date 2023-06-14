@@ -1,23 +1,15 @@
 package com.example.smtpautosendmessage;
 
-import com.example.smtpautosendmessage.Utils.CharsetChangerUtil;
 import com.example.smtpautosendmessage.Utils.ConfigUtil;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.Objects;
 
 
 /** Класс служит для запуска графического приложения
@@ -36,7 +28,7 @@ public class SMTPApplication extends Application {
     public void start(Stage stage) throws IOException {
         ConfigUtil.initialize(); // Генерация конфигурационного файла, если он отсутствует
         FXMLLoader fxmlLoader = new FXMLLoader();
-        Scene scene = new Scene(fxmlLoader.load(SMTPApplication.class.getResource("main-view.fxml")), 800, 400);
+        Scene scene = new Scene(fxmlLoader.load(Objects.requireNonNull(SMTPApplication.class.getResource("main-view.fxml"))), 800, 400);
         stage.setMinHeight(400);
         stage.setMinWidth(400);
         stage.setTitle("SMTPASM");
