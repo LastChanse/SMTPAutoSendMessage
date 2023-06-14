@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -66,10 +67,17 @@ public class SettingsController {
                         pgPathSettings.toFront();
                         break;
                     case ("SMTP подключение"):
+                        // Задание пароля скрытым по умолчанию
+                        eyeImg.setVisible(true);
+                        hiddenEyeImg.setVisible(false);
+                        passwordFieldPassword.setVisible(true);
+                        textFieldPassword.setVisible(false);
+
                         textFieldHost.setText(config.getProperty("mail.smtp.host", ""));
                         textFieldPort.setText(config.getProperty("mail.smtp.port", ""));
                         checkBoxAuth.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.auth", "")));
                         textFieldLogin.setText(config.getProperty("mail.smtp.sender", ""));
+                        passwordFieldPassword.setText(config.getProperty("mail.smtp.sender.password", ""));
                         textFieldPassword.setText(config.getProperty("mail.smtp.sender.password", ""));
                         checkBoxSSL.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.ssl.enable", "")));
                         checkBoxTLS.setSelected(Boolean.valueOf(config.getProperty("mail.smtp.starttls.enable", "")));
@@ -252,13 +260,56 @@ public class SettingsController {
      */
     textFieldLogin,
     /**
-     * Поле пароля для отправки писем с помощью SMTP сервера
-     */
-    textFieldPassword,
-    /**
      * Поле списка доверенных серверов
      */
     textFieldTrustServerList;
+
+    /**
+     * Видимое поле пароля для отправки писем с помощью SMTP сервера
+     */
+    @FXML
+    private TextField textFieldPassword;
+
+    /**
+     * Скрытое поле пароля для отправки писем с помощью SMTP сервера
+     */
+    @FXML
+    public PasswordField passwordFieldPassword;
+
+    /** При изменении видимого поля пароля его данные копируются в поле скрытого поля пароля */
+    @FXML
+    public void onChangeTextFieldPassword () {
+        passwordFieldPassword.setText(textFieldPassword.getText());
+    }
+
+    /** При изменении скрытого поля пароля его данные копируются в поле видимого поля пароля */
+    @FXML
+    public void onChangePasswordFieldPassword () {
+        textFieldPassword.setText(passwordFieldPassword.getText());
+    }
+
+    /** Переключатель видимости пароля */
+    @FXML
+    private ToggleButton toggleBtn;
+
+    /** Изображения открытого и скрытого глаза */
+    @FXML
+    private ImageView eyeImg, hiddenEyeImg;
+
+    /** Показать\скрыть пароль */
+    public void toggleButtonShowOtHide(ActionEvent event) {
+        if (toggleBtn.isSelected()) {
+            eyeImg.setVisible(false);
+            hiddenEyeImg.setVisible(true);
+            passwordFieldPassword.setVisible(false);
+            textFieldPassword.setVisible(true);
+        } else {
+            eyeImg.setVisible(true);
+            hiddenEyeImg.setVisible(false);
+            passwordFieldPassword.setVisible(true);
+            textFieldPassword.setVisible(false);
+        }
+    }
 
     /**
      * Флажок наличия авторизации

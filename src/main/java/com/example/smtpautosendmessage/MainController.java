@@ -58,10 +58,8 @@ public class MainController {
      * loadPropertiesFromConfig -- функция загрузки данных для отправки письма из конфига на форму отправки письма
      */
     private void loadPropertiesFromConfig() {
-        // Загрузка конфигурации
-        if ((ConfigUtil.config) == null) {
-            ConfigUtil.config = ConfigUtil.getConfig();
-        }
+        // Загрузка конфигурации из файла
+        ConfigUtil.config = ConfigUtil.getConfig();
         Properties config = ConfigUtil.config;
 
         setupRecipientComboBox(); // настройка выпадающего меню получателей
@@ -132,18 +130,19 @@ public class MainController {
      * Логика обработки изменения полей формы
      **/
 
-    @FXML
-    public void onSelectRecipientsGroup() {
-        ObservableList<StringProperty[]> groupsRecipients = recipientComboBox.getItems(); // Получение списка групп получателей
-        int index = recipientComboBox.getSelectionModel().getSelectedIndex(); // Получение индекса выбранного элемента
-        recipientComboBox.getEditor().setText("gg");
-    }
-
+    /**
+     * Формирование заголовка при изменении префикса
+     * @param keyEvent -- событие нажатия на кнопку
+     */
     @FXML
     public void prefixFieldChange(KeyEvent keyEvent) {
         titleField.setText(prefixField.getText() + generateTitle() + suffixField.getText());
     }
 
+    /**
+     * Формирование заголовка при изменении суффикса
+     * @param keyEvent -- событие нажатия на кнопку
+     */
     @FXML
     public void suffixFieldChange(KeyEvent keyEvent) {
         titleField.setText(prefixField.getText() + generateTitle() + suffixField.getText());
@@ -323,12 +322,14 @@ public class MainController {
         description.setText("");
     }
 
+    /** Загружает данные из конфигурации в форму */
     @FXML
     public void onLoadFromPropertiesClick(ActionEvent actionEvent) {
         loadPropertiesFromConfig();
         AlertUtil.showAlert("Данные полей формы успешно загружены из конфигурации.", Alert.AlertType.INFORMATION);
     }
 
+    /** Сохраняет данные из формы в конфигурацию */
     @FXML
     public void onLoadIntoPropertiesClick(ActionEvent actionEvent) {
         Properties config = ConfigUtil.config;
