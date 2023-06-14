@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static javafx.scene.control.cell.TextFieldTableCell.*;
 
@@ -30,17 +31,17 @@ public class SettingsController {
      * Страницы настроек
      */
     @FXML
-    private AnchorPane pgSMTPSettings, pgReceiverSettings, pgPathSettings, pgHelloSettings;
+    public AnchorPane pgSMTPSettings, pgReceiverSettings, pgPathSettings, pgHelloSettings;
     /**
      * Список страниц настроек
      */
     @FXML
-    private ListView pageList;
+    public ListView pageList;
 
     /** Загрузка конфигурационного файла и настройка страниц настроек, при инициализации контроллера */
     @FXML
     public void initialize() {
-        Properties config = ConfigUtil.config;
+        AtomicReference<Properties> config = new AtomicReference<>(ConfigUtil.config);
         pgHelloSettings.toFront();
         // Загрузка данных из конфигурационного файла
         // Добавление страниц настроек
@@ -56,25 +57,27 @@ public class SettingsController {
             } else pageName = page.toString();
             switch (pageName) {
                 case ("Прикрепляемые файлы") -> {
-                    textFieldSelectCatDirSendingFiles.setText(config.getProperty("data.files.path", ""));
+                    config.set(ConfigUtil.config);
+                    textFieldSelectCatDirSendingFiles.setText(config.get().getProperty("data.files.path", ""));
                     pgPathSettings.toFront();
                 }
                 case ("SMTP подключение") -> {
+                    config.set(ConfigUtil.config);
                     // Задание пароля скрытым по умолчанию
                     eyeImg.setVisible(true);
                     hiddenEyeImg.setVisible(false);
                     passwordFieldPassword.setVisible(true);
                     textFieldPassword.setVisible(false);
-                    textFieldHost.setText(config.getProperty("mail.smtp.host", ""));
-                    textFieldPort.setText(config.getProperty("mail.smtp.port", ""));
-                    checkBoxAuth.setSelected(Boolean.parseBoolean(config.getProperty("mail.smtp.auth", "")));
-                    textFieldLogin.setText(config.getProperty("mail.smtp.sender", ""));
-                    passwordFieldPassword.setText(config.getProperty("mail.smtp.sender.password", ""));
-                    textFieldPassword.setText(config.getProperty("mail.smtp.sender.password", ""));
-                    checkBoxSSL.setSelected(Boolean.parseBoolean(config.getProperty("mail.smtp.ssl.enable", "")));
-                    checkBoxTLS.setSelected(Boolean.parseBoolean(config.getProperty("mail.smtp.starttls.enable", "")));
-                    checkBoxSSLCheckServer.setSelected(Boolean.parseBoolean(config.getProperty("mail.smtps.ssl.checkserveridentity", "")));
-                    textFieldTrustServerList.setText(config.getProperty("mail.smtps.ssl.trust", ""));
+                    textFieldHost.setText(config.get().getProperty("mail.smtp.host", ""));
+                    textFieldPort.setText(config.get().getProperty("mail.smtp.port", ""));
+                    checkBoxAuth.setSelected(Boolean.parseBoolean(config.get().getProperty("mail.smtp.auth", "")));
+                    textFieldLogin.setText(config.get().getProperty("mail.smtp.sender", ""));
+                    passwordFieldPassword.setText(config.get().getProperty("mail.smtp.sender.password", ""));
+                    textFieldPassword.setText(config.get().getProperty("mail.smtp.sender.password", ""));
+                    checkBoxSSL.setSelected(Boolean.parseBoolean(config.get().getProperty("mail.smtp.ssl.enable", "")));
+                    checkBoxTLS.setSelected(Boolean.parseBoolean(config.get().getProperty("mail.smtp.starttls.enable", "")));
+                    checkBoxSSLCheckServer.setSelected(Boolean.parseBoolean(config.get().getProperty("mail.smtps.ssl.checkserveridentity", "")));
+                    textFieldTrustServerList.setText(config.get().getProperty("mail.smtps.ssl.trust", ""));
                     pgSMTPSettings.toFront();
                 }
                 case ("Группы получателей") -> {
@@ -174,7 +177,7 @@ public class SettingsController {
      * Закрыть окно настроек при нажатии на кнопку "Отмена"
      */
     @FXML
-    void closeSettings() {
+    public void closeSettings() {
         Stage stage = (Stage) closeButton.getScene().getWindow();
         stage.close();
     }
@@ -186,7 +189,7 @@ public class SettingsController {
      * Сохранить настройки страницы прикрепляемых файлов
      */
     @FXML
-    void saveSettingsPaths() {
+    public void saveSettingsPaths() {
         Properties newConfig = ConfigUtil.getConfig();
         assert newConfig != null;
         newConfig.setProperty("data.files.path", textFieldSelectCatDirSendingFiles.getText());
@@ -205,7 +208,7 @@ public class SettingsController {
      * Выбор относительного пути к папке с вложениями к письму
      */
     @FXML
-    void selectCatDirSendingFiles() {
+    public void selectCatDirSendingFiles() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setInitialDirectory(new File("."));
         File dir = directoryChooser.showDialog(pageList.getScene().getWindow());
@@ -224,7 +227,7 @@ public class SettingsController {
      * Поле адреса SMTP сервера
      */
     @FXML
-    private TextField textFieldHost,
+    public TextField textFieldHost,
     /**
      * Поле порта SMTP сервера
      */
@@ -242,7 +245,7 @@ public class SettingsController {
      * Видимое поле пароля для отправки писем с помощью SMTP сервера
      */
     @FXML
-    private TextField textFieldPassword;
+    public TextField textFieldPassword;
 
     /**
      * Скрытое поле пароля для отправки писем с помощью SMTP сервера
@@ -252,25 +255,26 @@ public class SettingsController {
 
     /** При изменении видимого поля пароля его данные копируются в поле скрытого поля пароля */
     @FXML
-    public void onChangeTextFieldPassword () {
+    public void onChangeTextFieldPassword() {
         passwordFieldPassword.setText(textFieldPassword.getText());
     }
 
     /** При изменении скрытого поля пароля его данные копируются в поле видимого поля пароля */
     @FXML
-    public void onChangePasswordFieldPassword () {
+    public void onChangePasswordFieldPassword() {
         textFieldPassword.setText(passwordFieldPassword.getText());
     }
 
     /** Переключатель видимости пароля */
     @FXML
-    private ToggleButton toggleBtn;
+    public ToggleButton toggleBtn;
 
     /** Изображения открытого и скрытого глаза */
     @FXML
-    private ImageView eyeImg, hiddenEyeImg;
+    public ImageView eyeImg, hiddenEyeImg;
 
     /** Показать\скрыть пароль */
+    @FXML
     public void toggleButtonShowOtHide() {
         if (toggleBtn.isSelected()) {
             eyeImg.setVisible(false);
@@ -289,7 +293,7 @@ public class SettingsController {
      * Флажок наличия авторизации
      */
     @FXML
-    private CheckBox checkBoxAuth,
+    public CheckBox checkBoxAuth,
     /**
      * Флажок использования сертификата SSL
      */
@@ -307,7 +311,7 @@ public class SettingsController {
      * Сохранить настройки страницы SMTP подключение
      */
     @FXML
-    void saveSettingsSMTP() {
+    public void saveSettingsSMTP() {
         Properties newConfig = ConfigUtil.getConfig();
         assert newConfig != null;
         newConfig.setProperty("mail.smtp.host", textFieldHost.getText());
@@ -330,22 +334,22 @@ public class SettingsController {
 
     /** Таблица групп получателей */
     @FXML
-    private TableView<StringProperty[]> tableRecipientsGroup;
+    public TableView<StringProperty[]> tableRecipientsGroup;
     /** Столбец названия групп */
     @FXML
-    private TableColumn<StringProperty[], String> groupNameCol;
+    public TableColumn<StringProperty[], String> groupNameCol;
     /** Столбец названия списка почтовых адресов */
     @FXML
-    private TableColumn<StringProperty[], String> receiversCol;
+    public TableColumn<StringProperty[], String> receiversCol;
     /** Список групп получателей */
     @FXML
-    ObservableList<StringProperty[]> recipientsGroupList = FXCollections.observableArrayList();
+    public ObservableList<StringProperty[]> recipientsGroupList = FXCollections.observableArrayList();
 
     /**
      * Поле поиска групп пользователей
      */
     @FXML
-    private TextField filterField;
+    public TextField filterField;
 
     /**
      * Сохранить настройки страницы групп получателей

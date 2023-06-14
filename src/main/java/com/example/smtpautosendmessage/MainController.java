@@ -73,6 +73,7 @@ public class MainController {
     /**
      * Загрузка данных выпадающего меню из конфигурации
      */
+    @FXML
     public void loadRecipientComboBox() {
         // Загрузка данных из конфигурации
         recipientComboBox.setItems(FXCollections.observableArrayList());

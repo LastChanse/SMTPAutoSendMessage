@@ -14,10 +14,10 @@ import javafx.scene.layout.HBox;
  */
 public class TutorialController {
     @FXML
-    private Label homeTitle, serverTitle;
+    public Label homeTitle, serverTitle;
 
     @FXML
-    private AnchorPane pgHomeTutorial, pgServerTutorial, pgClientTutorial;
+    public AnchorPane pgHomeTutorial, pgServerTutorial, pgClientTutorial;
 
     /** Предварительные действия над элементами окна руководства пользователя при инициализации контроллера */
     public void initialize() {
@@ -37,16 +37,28 @@ public class TutorialController {
         pgHomeTutorial.toFront();
     }
 
+    /**
+     * Открыть страницу ссылок на инструкции по настройке сервера
+     */
+    @FXML
     public void openPgServer() {
         pgServerTutorial.toFront();
     }
 
+    /**
+     * Открыть страницу руководства по приложению
+     */
+    @FXML
     public void openPgClient() {
         numStepPageClient = 1;
         updateClientTutorPg();
         pgClientTutorial.toFront();
     }
 
+    /**
+     * Открыть главную страницу руководства
+     */
+    @FXML
     public void openPgHome() {
         pgHomeTutorial.toFront();
     }
@@ -54,7 +66,11 @@ public class TutorialController {
     /**
      * Инструкция по настройке сервера
      */
-
+    /**
+     * Открыть гиперссылку по её содержимому
+     * @param event -- событие
+     */
+    @FXML
     public void openLink(MouseEvent event) {
         Hyperlink link = (Hyperlink) event.getSource();
         SMTPApplication.hostServicesStatic.showDocument(link.getText());
@@ -64,14 +80,15 @@ public class TutorialController {
      * Общее руководство по приложению
      */
     @FXML
-    private ImageView clientTutorImage;
+    public ImageView clientTutorImage;
     @FXML
-    private HBox imgParent;
+    public HBox imgParent;
     @FXML
-    private Label clientTitle, clientDescription;
+    public Label clientTitle, clientDescription;
     /** Номер страницы общего руководства */
-    int numStepPageClient = 1;
-    String[] titlesPageClient = new String[] {
+    private int numStepPageClient = 1;
+    /** Заголовки страниц общего руководства */
+    private String[] titlesPageClient = new String[] {
             "Окно \"Форма\"",
             "Окно \"Форма\" > Меню \"Конфигурация\"",
             "Окно \"Форма\" > Меню \"Форма\"",
@@ -84,7 +101,8 @@ public class TutorialController {
             "Окно \"Руководство\" > Страница \"Ссылки на инструкции для настройки SMTP-серверов\"",
             "Окно \"Руководство\" > Страница \"Общее руководство по приложению\""
     };
-    String[] descriptionPageClient = new String[] {
+    /** Описания страниц общего руководства */
+    private String[] descriptionPageClient = new String[] {
             "В данном окне можно сформировать и отправить письмо. Поле \"Получатель(и):\" можно заполнить вручную или выбрать в выпадающем списке группу получателей. Поле \"Заголовок(и):\" формируется из полей \"Суффикс:\" и \"Префикс:\", а также из названий прикрепляемых файлов.",
             "В данном меню кнопка \"Экспортировать\" позволяет сохранить копию конфигурационного файла. Кнопка \"Импортировать\" позволяет загрузить настройки выбранного конфигурационного файла, текущий конфигурационный файл будет перезаписан. Копии не перезаписываются.",
             "В данном меню кнопка \"Очистить\" стирает все данные с полей формы. Кнопка \"Загрузить из конфигурации\" позволяет загрузить данные полей формы из конфигурации. Кнопка \"Сохранить в конфигурацию\" позволяет сохранить данные полей формы в конфигурацию.",
@@ -114,11 +132,20 @@ public class TutorialController {
 
     }
 
+    /**
+     * Переход на следующий слайд
+     */
+    @FXML
     public void nextStepClient() {
         numStepPageClient++;
         updateClientTutorPg();
     }
 
+
+    /**
+     * Переход на предыдущий слайд
+     */
+    @FXML
     public void previousStepClient() {
         numStepPageClient--;
         updateClientTutorPg();
