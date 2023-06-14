@@ -33,7 +33,7 @@ public class MainController {
     /*
       Основные элементы
      */
-    /** Поле получателей с выбором групп получателей из выпадающего меню */
+    /** Поле получателей с выбором групп получателей из выпадающего списка */
     @FXML
     public ComboBox recipientComboBox;
     /** Поля префикс, суффикс и заголовок письма */
@@ -59,7 +59,7 @@ public class MainController {
         ConfigUtil.config = ConfigUtil.getConfig();
         Properties config = ConfigUtil.config;
 
-        setupRecipientComboBox(); // настройка выпадающего меню получателей
+        setupRecipientComboBox(); // настройка выпадающего списка получателей
         // Загрузка данных из конфигурации
         loadRecipientComboBox();
         assert config != null;
@@ -71,22 +71,19 @@ public class MainController {
     }
 
     /**
-     * Загрузка данных выпадающего меню из конфигурации
+     * Загрузка данных выпадающего списка из конфигурации
      */
     @FXML
     public void loadRecipientComboBox() {
-        // Загрузка данных из конфигурации
         recipientComboBox.setItems(FXCollections.observableArrayList());
-        // В списке поля получателей можно группу получателей выбрать по названию группы
-        ObservableList<StringProperty[]> groupsRecipients = ConfigUtil.getRecipients(); // Получение списка групп получателей
-        // Передача в выпадающее меню содержимого групп получателей без названий
+        ObservableList<StringProperty[]> groupsRecipients = ConfigUtil.getRecipients();
         for (StringProperty[] strings : groupsRecipients) {
             recipientComboBox.getItems().add(strings[1].getValue());
         }
     }
 
     /**
-     * Функция настройки выпадающего меню групп получателей
+     * Функция настройки выпадающий список групп получателей
      **/
     private void setupRecipientComboBox() {
         // Задание отображение названий групп и возвращение содержимого групп получателей
@@ -102,7 +99,7 @@ public class MainController {
                     }
 
                     @Override
-                    protected void updateItem(String item, boolean empty) { // Обновление элементов выпадающего меню
+                    protected void updateItem(String item, boolean empty) { // Обновление элементов выпадающего списка
                         super.updateItem(item, empty); // Наследование
 
                         if (item == null || empty) { // Если элемент пуст
@@ -116,7 +113,7 @@ public class MainController {
                                     break;
                                 }
                             }
-                            label.setText(displayItem); // Задать название группы получателей полю в ячейке выпадающего меню
+                            label.setText(displayItem); // Задать название группы получателей полю в ячейке выпадающего списка
                             setGraphic(label); // Отобразить
                         }
                     }
@@ -380,12 +377,14 @@ public class MainController {
     public void onTutorialClick() {
         try {
             Stage stage = new Stage();
-            Scene scene = new Scene(new FXMLLoader().load(Objects.requireNonNull(getClass().getResource("tutorial-view.fxml"))), 900, 400);
+            Scene scene = new Scene(new FXMLLoader().load(Objects.requireNonNull(
+                    getClass().getResource("tutorial-view.fxml"))), 900, 400);
             stage.setMinHeight(400);
             stage.setMinWidth(900);
             stage.setTitle("Руководство пользователя");
             stage.setScene(scene);
-            stage.getIcons().add(new Image(String.valueOf(getClass().getResource("logo.png")))); // Установка логотипа
+            stage.getIcons().add(new Image(
+                    String.valueOf(getClass().getResource("logo.png")))); // Установка логотипа
             stage.show(); // Показываем окно
         } catch (IOException e) {
             AlertUtil.showAlert(e.getMessage(), Alert.AlertType.ERROR);

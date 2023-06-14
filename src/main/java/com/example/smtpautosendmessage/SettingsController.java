@@ -131,36 +131,38 @@ public class SettingsController {
                         return row;
                     });
 
-                    // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+                    // 1. Обернуть ObservableList в FilteredList (по умолчанию фильтрованный список отображает все строки).
                     FilteredList<StringProperty[]> filteredData = new FilteredList<>(recipientsGroupList, p -> true);
 
-                    // 2. Set the filter Predicate whenever the filter changes.
+                    // 2. Задание изменение filteredData при изменении поля фильтра.
                     filterField.textProperty().addListener((observable, oldValue, newValue) -> filteredData.setPredicate(stringProperties -> {
-                        // If filter text is empty, display all persons.
+                        // Если поле фильтра пусто, то отобразить всё.
                         if (newValue == null || newValue.isEmpty()) {
                             return true;
                         }
 
-                        // Compare first name and last name of every person with filter text.
+                        // Текст из поля с фильтром сделать в нижнем регистре.
                         String lowerCaseFilter = newValue.toLowerCase();
 
+                        // Сравнение названия группы в нижнем регистре с полем фильтра в нижнем регистре
                         if (stringProperties[0].getValue().toLowerCase().contains(lowerCaseFilter)) {
-                            return true; // Filter matches first name.
+                            return true; // Фильтр нашёл соответствие.
                         }
-                        return false; // Does not match.
+                        return false; // Не нашёл.
                     }));
 
-                    // 3. Wrap the FilteredList in a SortedList.
+                    // 3. Обернуть FilteredList в SortedList.
                     SortedList<StringProperty[]> sortedData = new SortedList<>(filteredData);
 
-                    // 4. Bind the SortedList comparator to the TableView comparator.
+                    // 4. Задать для компаратора SortedList компаратор TableView.
                     sortedData.comparatorProperty().bind(tableRecipientsGroup.comparatorProperty());
 
-                    // 5. Add sorted (and filtered) data to the table.
+                    // 5. Добавить хранящиеся (и отсортированные) данные в таблицу.
                     tableRecipientsGroup.setItems(sortedData);
                     pgReceiverSettings.toFront();
                 }
                 default -> {
+                    pgHelloSettings.toFront();
                 }
             }
         });
