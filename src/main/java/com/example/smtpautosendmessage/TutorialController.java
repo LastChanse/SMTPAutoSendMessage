@@ -20,20 +20,17 @@ public class TutorialController {
     public AnchorPane pgHomeTutorial, pgServerTutorial, pgClientTutorial;
 
     /** Предварительные действия над элементами окна руководства пользователя при инициализации контроллера */
+    @FXML
     public void initialize() {
-        // Делаем автоматический перенос строк для заголовков и описания руководства пользователя
         homeTitle.setWrapText(true);
         serverTitle.setWrapText(true);
         clientTitle.setWrapText(true);
         clientDescription.setWrapText(true);
 
-        // При изменении размеров окна, менять размеры изображения
         imgParent.widthProperty().addListener((obs, oldVal, newVal) -> clientTutorImage.setFitWidth((Double) newVal-10));
         imgParent.heightProperty().addListener((obs, oldVal, newVal) -> clientTutorImage.setFitHeight((Double) newVal - 10));
-
-        // Запрет на изменения соотношения сторон изображения
         clientTutorImage.setPreserveRatio(true);
-        // Задание первой отображаемой страницы
+
         pgHomeTutorial.toFront();
     }
 

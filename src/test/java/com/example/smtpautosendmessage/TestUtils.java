@@ -15,7 +15,7 @@ import java.util.Properties;
 public class TestUtils {
 
     /**
-     * Тест работы сохранения конфигурации
+     * Тест работы сохранения и загрузки конфигурации
      */
     @Test
     public void testSaveLoadConfig() {
@@ -41,16 +41,21 @@ public class TestUtils {
     }
 
     /**
-     * Тест работы сохранения групп получателей
+     * Тест работы сохранения и загрузки групп получателей
      */
     @Test
     public void testSaveLoadRecipients() {
         ObservableList<StringProperty[]> recipients = FXCollections.observableArrayList();
-        recipients.add(new StringProperty[] {new SimpleStringProperty("Группа 1"), new SimpleStringProperty("1@mail.ru,2@gmail.com,3@yandex.ru")});
-        recipients.add(new StringProperty[] {new SimpleStringProperty("Группа 2"), new SimpleStringProperty("21@mail.ru,22@gmail.com,23@yandex.ru")});
-        recipients.add(new StringProperty[] {new SimpleStringProperty("Группа 3"), new SimpleStringProperty("31@mail.ru,32@gmail.com,33@yandex.ru")});
-        recipients.add(new StringProperty[] {new SimpleStringProperty("Группа 4"), new SimpleStringProperty("41@mail.ru,42@gmail.com,43@yandex.ru")});
-        recipients.add(new StringProperty[] {new SimpleStringProperty("Группа 5"), new SimpleStringProperty("51@mail.ru,52@gmail.com,53@yandex.ru")});
+        recipients.add(new StringProperty[] {new SimpleStringProperty("Группа 1"),
+                new SimpleStringProperty("1@mail.ru,2@gmail.com,3@yandex.ru")});
+        recipients.add(new StringProperty[] {new SimpleStringProperty("Группа 2"),
+                new SimpleStringProperty("21@mail.ru,22@gmail.com,23@yandex.ru")});
+        recipients.add(new StringProperty[] {new SimpleStringProperty("Группа 3"),
+                new SimpleStringProperty("31@mail.ru,32@gmail.com,33@yandex.ru")});
+        recipients.add(new StringProperty[] {new SimpleStringProperty("Группа 4"),
+                new SimpleStringProperty("41@mail.ru,42@gmail.com,43@yandex.ru")});
+        recipients.add(new StringProperty[] {new SimpleStringProperty("Группа 5"),
+                new SimpleStringProperty("51@mail.ru,52@gmail.com,53@yandex.ru")});
         ConfigUtil.setRecipients(recipients);
         ObservableList<StringProperty[]> recipientsConfig = ConfigUtil.getRecipients();
         for (int i = 0; i < recipients.size(); i++) {
@@ -68,10 +73,10 @@ public class TestUtils {
     }
 
     /**
-     * Тест работы сохранения конфигурационного файла
+     * Тест работы Экспорта и Импорта конфигурационного файла
      */
     @Test
-    public void testSaveLoadFileConfig() {
+    public void testExportImportFileConfig() {
         Properties configOut = new Properties();
         configOut.put("mail.smtp.auth", "true");
         configOut.put("mail.smtp.starttls.enable", "true");
@@ -102,7 +107,7 @@ public class TestUtils {
     }
 
     /**
-     * Тест создание конфигурационного файла по умолчанию
+     * Тест создания конфигурационного файла по умолчанию
      */
     @Test
     public void testCreateDefaultConfigFile() {
